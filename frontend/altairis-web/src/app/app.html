@@ -1,0 +1,16 @@
+<div class="app-layout">
+  
+  <!-- 1. El componente de tu menú (se queda fijo a la izquierda) -->
+  <app-sidebar-menu>
+  </app-sidebar-menu>
+
+  <!-- 2. Contenedor de la derecha (Páginas dinámicas + Navbar superior opcional) -->
+  <div class="app-layout__content">
+    <app-main-header></app-main-header>
+
+    <main class="main-page">
+      <router-outlet></router-outlet>
+    </main>
+    
+  </div>
+</div>
