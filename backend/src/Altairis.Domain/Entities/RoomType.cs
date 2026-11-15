@@ -14,9 +14,9 @@ namespace Altairis.Domain.Entities
         public int MaxOccupancy { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTime CreationDate { get; set; }
-        //public Hotel Hotel { get; set; } = null!;
+        public Hotel? Hotel { get; set; } = null;
 
-        //public IEnumerable<DailyInventory> DailyInventories { get; set; } = new List<DailyInventory>();
-        //public IEnumerable<Reservation> Reservations { get; set; } = new List<Reservation>();
+        //public IEnumerable<DailyInventory>? DailyInventories { get; set; } = null;
+        //public IEnumerable<Reservation>? Reservations { get; set; } = null;
     }
 }

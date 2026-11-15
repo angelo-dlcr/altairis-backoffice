@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
@@ -7,8 +7,11 @@ import { environment } from '../../../../environments/environment';
 import {
   RoomType,
   CreateRoomTypeRequest,
-  UpdateRoomTypeRequest
+  UpdateRoomTypeRequest,
+  RoomTypeFilters
 } from '../models/room-type.model';
+import { ListApiResponse, PagedListApiResponse } from '../../../shared/models/api-response.model';
+import { PaginationParams } from '../../../shared/models/pagination-params-model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +20,23 @@ export class RoomTypeApiService {
 
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl =
-    `${environment.apiUrl}/room-types`;
+  private readonly apiUrl = `${environment.apiUrl}/RoomType`;
 
-  getByHotel(hotelId: number): Observable<RoomType[]> {
-    return this.http.get<RoomType[]>(
-      `${environment.apiUrl}/hotels/${hotelId}/room-types`
+  getAllPaged(
+    pagination: PaginationParams, 
+    filters: RoomTypeFilters | undefined
+  ) : Observable<PagedListApiResponse<RoomType>> 
+  {
+    const unifiedParams = {
+      ...pagination,
+      ...filters
+    }
+
+    var httpParams = this.flatParams(unifiedParams);
+
+    return this.http.get<PagedListApiResponse<RoomType>>(
+      `${this.apiUrl}/GetAllPaged`,
+      {params: httpParams}
     );
   }
 
@@ -53,5 +67,21 @@ export class RoomTypeApiService {
     return this.http.delete<void>(
       `${this.apiUrl}/${id}`
     );
+  }
+
+  private flatParams(params: any) : HttpParams {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      Object.keys(params).forEach(key => {
+        const value = (params as any)[key];
+        
+        if (value !== undefined && value !== null && value !== '') {
+          httpParams = httpParams.set(key, value.toString());
+        }
+      });
+    }
+
+    return httpParams;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HotelFilters } from '../../models/hotel.model';
 
@@ -45,5 +45,4 @@ export class HotelFiltersComponent {
 
     this.onClear.emit();
   }
-
 }

@@ -19,6 +19,7 @@ namespace Altairis.Application.DTOs
         public ReservationStatus Status { get; set; } = ReservationStatus.Pending;
         public DateTime CreationDate { get; set; }
 
-        public RoomType RoomType { get; set; } = null!;
+        public RoomTypeDTO? RoomType { get; set; } = null!;
+        public HotelDTO? Hotel { get; set; } = null!;
     }
 }

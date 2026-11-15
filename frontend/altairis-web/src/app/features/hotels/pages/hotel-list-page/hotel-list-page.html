@@ -32,7 +32,7 @@
             <p class="text-secondary-emphasis">No hay registos que coincidan con la búsqueda.</p>
         }
         @else {
-            <div class="table-responsive">
+            <div class="table-responsive-lg">
                 <table class="table table-hover">
                     <thead>
                         <tr class="text-center">
@@ -52,11 +52,18 @@
                                 <td scope="row">{{hotel.country}}</td>
                                 <td scope="row">{{hotel.city}}</td>
                                 <td scope="row">
-                                    <span 
-                                        class="badge rounded-pill text-bg-{{hotel.isActive ? 'success' : 'danger'}}" 
-                                    >
-                                        {{hotel.isActive ? 'Activo' : 'Inactivo'}}
-                                    </span>
+                                    @switch (hotel.isActive) {
+                                        @case (true) {
+                                            <span class="badge rounded-pill text-success bg-success-subtle badge">
+                                                Activo
+                                            </span>
+                                        }
+                                        @case (false) {
+                                            <span class="badge rounded-pill text-danger bg-danger-subtle badge">
+                                                Inactivo
+                                            </span>
+                                        }
+                                    }
                                 </td>
                                 <td scope="row">
                                     <div class="dropdown">
@@ -64,10 +71,47 @@
                                             <i class="bi bi-gear me-2"></i>
                                         </a>
 
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Ver</a></li>
-                                            <li><a class="dropdown-item" href="#">Ver habitaciones</a></li>
-                                            <li><a class="dropdown-item" href="#">Desactivar</a></li>
+                                        <ul class="dropdown-menu dropdown-menu-dark" style="cursor: pointer;">
+                                            <li>
+                                                <a class="dropdown-item">
+                                                    <i class="bi bi-eye me-2"></i>
+                                                    Ver
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a class="dropdown-item">
+                                                    <i class="bi bi-house-gear me-2"></i>
+                                                    Ver habitaciones
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a class="dropdown-item">
+                                                    <i class="bi bi-pencil me-2"></i>
+                                                    Editar
+                                                </a>
+                                            </li>
+                                            
+                                            @if (!hotel.isActive) 
+                                            {
+                                                <li>
+                                                    <a class="dropdown-item">
+                                                        <i class="bi bi-power me-2"></i>
+                                                        Activar
+                                                    </a>
+                                                </li> 
+                                            }
+
+                                            @if (hotel.isActive) 
+                                            {
+                                                 <li>
+                                                    <a class="dropdown-item">
+                                                        <i class="bi bi-power me-2"></i>
+                                                        Desactivar
+                                                    </a>
+                                                </li> 
+                                            }
                                         </ul>
                                     </div>
                                 </td>
@@ -76,49 +120,14 @@
                     </tbody>
                 </table>
             </div>
-            <div class="d-flex mt-4 align-items-center position-relative">
-                <small class="d-flex fw-semibold gap-2 text-secondary pe-3 position-absolute start-0">
-                    Total: {{data()?.totalCount}} registros
-                </small>
-
-                <nav class="w-100 d-flex justify-content-center">
-                    <ul class="pagination mb-0" style="cursor: pointer;">
-                        <li class="page-item">
-                            <a 
-                                class="page-link border-0" 
-                                aria-label="Previous"
-                                [class.active]="data()?.pageNumber! > 1"
-                            >
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        @for (page of data()?.pagesArray; track page) {
-                            <li class="page-item">
-                                <a 
-                                    aria-label="Next"  
-                                    class="page-link border-0" 
-                                    [class.active]="data()?.pageNumber === page"
-                                >
-                                    <span aria-hidden="true">{{page}}</span>
-                                </a>
-                            </li>
-                        }
-                        <li class="page-item">
-                            <a 
-                                class="page-link border-0" 
-                                aria-label="Next"
-                                [class.active]="data()?.pageNumber! < data()?.totalPages!"
-                            >
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-
-                <small class="d-flex fw-semibold gap-2 text-secondary pe-3 position-absolute end-0">
-                    Registros por página: {{ data()?.pageSize }}
-                </small>
-            </div>
+            <app-pagination-component
+                [totalCount]="data()?.totalCount ?? 0"
+                [pageNumber]="data()?.pageNumber ?? 1"
+                [pageSize]="data()?.pageSize ?? pagination()?.pageSize ?? 10"
+                [totalPages]="data()?.totalPages ?? 0"
+                (pageChange)="onPageChange($event)"
+            >
+            </app-pagination-component>
         }
     }
 </div>

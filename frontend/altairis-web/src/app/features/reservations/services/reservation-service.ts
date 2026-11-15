@@ -12,15 +12,11 @@ import { environment } from '../../../../environments/environment';
 import {
   Reservation,
   CreateReservationRequest,
-  ReservationStatus
+  ReservationStatus,
+  ReservationFilters
 } from '../models/reservation.model';
-
-export interface ReservationFilter {
-  hotelId?: number;
-  fromDate?: string;
-  toDate?: string;
-  status?: ReservationStatus;
-}
+import { PaginationParams } from '../../../shared/models/pagination-params-model';
+import { PagedListApiResponse } from '../../../shared/models/api-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,33 +26,21 @@ export class ReservationApiService {
   private readonly http = inject(HttpClient);
 
   private readonly apiUrl =
-    `${environment.apiUrl}/reservations`;
+    `${environment.apiUrl}/Reservation`;
 
-  getAll(
-    filters?: ReservationFilter
-  ): Observable<Reservation[]> {
-
-    let params = new HttpParams();
-
-    if (filters?.hotelId !== undefined) {
-      params = params.set('hotelId', filters.hotelId);
+  getAllPaged(pagination: PaginationParams, filters: ReservationFilters | undefined)
+  : Observable<PagedListApiResponse<Reservation>> 
+  {
+    const unifiedParams = {
+      ...pagination,
+      ...filters
     }
 
-    if (filters?.fromDate) {
-      params = params.set('fromDate', filters.fromDate);
-    }
+    var httpParams = this.flatParams(unifiedParams);
 
-    if (filters?.toDate) {
-      params = params.set('toDate', filters.toDate);
-    }
-
-    if (filters?.status) {
-      params = params.set('status', filters.status);
-    }
-
-    return this.http.get<Reservation[]>(
-      this.apiUrl,
-      { params }
+    return this.http.get<PagedListApiResponse<Reservation>>(
+      `${this.apiUrl}/GetAllPaged`,
+      {params: httpParams}
     );
   }
 
@@ -83,5 +67,21 @@ export class ReservationApiService {
       `${this.apiUrl}/${id}/status`,
       { status }
     );
+  }
+  
+  private flatParams(params: any) : HttpParams {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      Object.keys(params).forEach(key => {
+        const value = (params as any)[key];
+        
+        if (value !== undefined && value !== null && value !== '') {
+          httpParams = httpParams.set(key, value.toString());
+        }
+      });
+    }
+
+    return httpParams;
   }
 }

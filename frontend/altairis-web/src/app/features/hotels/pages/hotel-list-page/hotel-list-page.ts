@@ -7,12 +7,13 @@ import { PagedListApiResponse } from '../../../../shared/models/api-response.mod
 import { HttpStatusCode } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { PaginationComponent } from '../../../../shared/components/pagination-component/pagination-component';
 
 @Component({
   imports: [
     HotelFiltersComponent,
-    DatePipe
-  ],
+    PaginationComponent
+],
   selector: 'app-hotel-list-page',
   styleUrl: './hotel-list-page.scss',
   templateUrl: './hotel-list-page.html',
@@ -38,6 +39,13 @@ export class HotelListPageComponent {
   data = this.hotelResource.value;        
   isLoading = this.hotelResource.isLoading;
   error = this.hotelResource.error;
+  
+  onPageChange(page: number): void {
+    this.pagination.update(current => ({
+      ...current,
+      pageNumber: page
+    }));
+  }
 
   filterHotels(filters: HotelFilters) {
     this.filters.set(filters); 

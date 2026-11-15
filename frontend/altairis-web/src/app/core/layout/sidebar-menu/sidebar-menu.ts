@@ -50,15 +50,15 @@ export class SidebarMenuComponent {
     },
 
     {
+      label: 'Reservas',
+      path: '/reservations',
+      icon: 'bi bi-calendar-check'
+    },
+
+    {
       label: 'Inventario',
       path: '/inventory',
       icon: 'bi bi-list-check'
     },
-
-    {
-      label: 'Reservas',
-      path: '/reservations',
-      icon: 'bi bi-calendar-check'
-    }
   ];
 }

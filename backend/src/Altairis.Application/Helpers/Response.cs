@@ -19,7 +19,7 @@ namespace Altairis.Application.Helpers
 
     public class ListApiResponse<T> : ApiResponseBase
     {
-        public List<T>? Items { get; set; } = [];
+        public List<T?>? Items { get; set; } = [];
     }
 
     public class PagedListApiResponse<T> : ListApiResponse<T>
@@ -30,7 +30,7 @@ namespace Altairis.Application.Helpers
         public int PageSize { get; set; } = 10;
         public int TotalPages =>
             (TotalCount > PageSize)
-                ? (int)Math.Ceiling((double)(TotalCount / PageSize))
+                ? (int)Math.Ceiling(((double)TotalCount / PageSize))
                 : 1;
         public int[] PagesArray =>
             (TotalCount > PageSize)

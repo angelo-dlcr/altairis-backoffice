@@ -56,6 +56,9 @@ namespace Altairis.Infrastructure.Persistence.Configurations
             builder.HasIndex(x => x.HotelId)
                 .HasDatabaseName("IX_RoomTypes_HotelId");
 
+            //builder.Navigation(x => x.Hotel)
+            //    .AutoInclude();
+
             //builder.Navigation(x => x.DailyInventories)
             //    .AutoInclude();
 

@@ -1,4 +1,5 @@
 ﻿using Altairis.Application.DTOs;
+using Altairis.Application.DTOs.Filters;
 using Altairis.Application.Helpers;
 using Altairis.Domain.Entities;
 using System;
@@ -11,6 +12,6 @@ namespace Altairis.Application.Interfaces.Services
     {
         Task<SingleApiResponse<DailyInventoryDTO>> GetByIdAsync(int id);
         Task<ListApiResponse<DailyInventoryDTO>> GetAllAsync();
-        Task<PagedListApiResponse<DailyInventoryDTO>> GetAllPagedAsync(PaginationFilters pagination);
+        Task<PagedListApiResponse<DailyInventoryDTO>> GetAllPagedAsync(PaginationFilters pagination, DailyInventoryFiltersDTO? filter = null);
     }
 }

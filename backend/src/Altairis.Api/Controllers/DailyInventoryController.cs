@@ -1,4 +1,5 @@
 ﻿using Altairis.Application.DTOs;
+using Altairis.Application.DTOs.Filters;
 using Altairis.Application.Helpers;
 using Altairis.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -35,8 +36,10 @@ namespace Altairis.Api.Controllers
 
 
         [HttpGet(nameof(GetAllPaged))]
-        public async Task<IActionResult> GetAllPaged([FromQuery] PaginationFilters pagination) 
-            => Ok(await _service.GetAllPagedAsync(pagination));
+        public async Task<IActionResult> GetAllPaged(
+            [FromQuery] PaginationFilters pagination, 
+            [FromQuery] DailyInventoryFiltersDTO? filter = null) 
+        => Ok(await _service.GetAllPagedAsync(pagination, filter));
 
     }
 }

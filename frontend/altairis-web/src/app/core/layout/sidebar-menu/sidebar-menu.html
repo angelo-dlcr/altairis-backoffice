@@ -17,7 +17,8 @@
         #rla="routerLinkActive"
         [class.fw-bold]="rla.isActive"
         [class.text-black]="rla.isActive"
-        [class.text-light]="!rla.isActive"
+        [class.text-bg-]="rla.isActive"
+        [class.bg-secondary-subtle]="rla.isActive"
       >
         <i class='{{item.icon}} me-3'></i>
         <span>{{ item.label }}</span>

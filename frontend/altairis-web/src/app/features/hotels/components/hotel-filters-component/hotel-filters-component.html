@@ -11,9 +11,6 @@
                 (ngModelChange)="updateFilterField('nameOrCode', $event)"
                 placeholder=""
             />
-            <!-- <small id="helpId" class="form-text text-body-secondary"
-                >Help text</small
-            > -->
         </div>
         <div class="col-md-4">
             <label for="" class="form-label fw-semibold">País:</label>
@@ -25,9 +22,6 @@
                 (ngModelChange)="updateFilterField('country', $event)"
                 placeholder=""
             />
-            <!-- <small id="helpId" class="form-text text-body-secondary"
-                >Help text</small
-            > -->
         </div>
         <div class="col-md-4">
             <label for="" class="form-label fw-semibold">Ciudad:</label>
@@ -39,9 +33,6 @@
                 (ngModelChange)="updateFilterField('city', $event)"
                 placeholder=""
             />
-            <!-- <small id="helpId" class="form-text text-body-secondary"
-                >Help text</small
-            > -->
         </div>
     </div>
     
@@ -54,9 +45,9 @@
                 [(ngModel)]="filters().isActive"
                 (ngModelChange)="updateFilterField('isActive', $event)"
             >
-                <option selected value="">Todos</option>
-                <option value="true">Activos</option>
-                <option value="false">Inactivos</option>
+                <option value=null>Todos</option>
+                <option value=true>Activos</option>
+                <option value=false>Inactivos</option>
             </select>
         </div>
         

@@ -1,23 +1,28 @@
 ﻿using Altairis.Application.DTOs;
+using Altairis.Application.DTOs.Filters;
+using Altairis.Application.Helpers;
+using Altairis.Application.Helpers.MappingExtensions;
 using Altairis.Application.Interfaces.Repositories;
 using Altairis.Application.Interfaces.Services;
-using Altairis.Application.Helpers.MappingExtensions;
 using Altairis.Domain.Entities;
+using Altairis.Domain.Enums;
 using System;
-using System.Net;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Net;
 using System.Text;
-using Altairis.Application.Helpers;
 
 namespace Altairis.Application.Services
 {
     public class RoomTypeService : IRoomTypeService
     {
         private readonly IBaseRepository<RoomType> _repository;
+        private readonly IHotelService _hotelService;
 
-        public RoomTypeService(IBaseRepository<RoomType> repository)
+        public RoomTypeService(IBaseRepository<RoomType> repository, IHotelService hotelService)
         {
             _repository = repository;
+            _hotelService = hotelService;
         }
 
         public async Task<SingleApiResponse<RoomTypeDTO>> GetByIdAsync(int id)
@@ -70,25 +75,52 @@ namespace Altairis.Application.Services
             }
         }
 
-        public async Task<PagedListApiResponse<RoomTypeDTO>> GetAllPagedAsync(PaginationFilters pagination)
+        public async Task<PagedListApiResponse<RoomTypeDTO>> GetAllPagedAsync(PaginationFilters pagination, RoomTypeFiltersDTO? filter = null)
         {
             try
             {
-                var roomTypes = await _repository.GetAllAsync();
+                IReadOnlyList<RoomType>? roomTypes;
 
-                return (roomTypes is not null && roomTypes.Any())
-                    ? new PagedListApiResponse<RoomTypeDTO>
-                        {
-                            Items = roomTypes?.Skip(pagination.Skip).Take(pagination.Take).Select(h => h.ToDto())?.ToList(),
-                            TotalCount = roomTypes?.Count ?? 0,
-                            PageNumber = pagination.PageNumber,
-                            PageSize = pagination.PageSize,
-                        }
-                    : new PagedListApiResponse<RoomTypeDTO>
-                        {
-                            StatusCode = HttpStatusCode.NotFound,
-                            Message = "No se hallaron registros.",
-                        };
+                if (filter is not null && !filter.AreAllPropertiesNull())
+                {
+                    Expression<Func<RoomType, bool>> predicate = (roomType) =>
+                    (
+                        (string.IsNullOrEmpty(filter.NameOrCode) ||
+                            (roomType.Name.ToUpper().Contains(filter.NameOrCode.ToUpper().Trim())
+                          || roomType.Code.ToUpper().Contains(filter.NameOrCode.ToUpper().Trim()))
+                        )
+                        && (filter.IsActive == null || roomType.IsActive == filter.IsActive)
+                        && (filter.StartDate == null || roomType.CreationDate >= filter.StartDate)
+                        && (filter.EndDate == null || roomType.CreationDate <= filter.EndDate.Value.AddDays(1).AddSeconds(-1))
+                    );
+
+                    roomTypes = await _repository.GetByConditionOrderedByAsync(predicate, x => x.CreationDate, true, ignoreAutoIncludes: false);
+                }
+                else
+                {
+                    roomTypes = await _repository.GetAllOrderedByAsync(x => x.CreationDate, true, ignoreAutoIncludes: false);
+                }
+
+                if (roomTypes is not null && roomTypes.Any())
+                {
+                    var pagedRoomTypes = await ListToDto(roomTypes?.Skip(pagination.Skip).Take(pagination.Take).Select(h => h)?.ToList()!);
+
+                    return new PagedListApiResponse<RoomTypeDTO>
+                    {
+                        Items = pagedRoomTypes,
+                        TotalCount = roomTypes?.Count ?? 0,
+                        PageNumber = pagination.PageNumber,
+                        PageSize = pagination.PageSize,
+                    };
+                }
+                else
+                {
+                    return new PagedListApiResponse<RoomTypeDTO>
+                    {
+                        StatusCode = HttpStatusCode.NotFound,
+                        Message = "No se hallaron registros.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -99,6 +131,23 @@ namespace Altairis.Application.Services
                     Message = ex.Message,
                 };
             }
+        }
+
+        private async Task<List<RoomTypeDTO>> ListToDto(IReadOnlyList<RoomType> pagedRoomTypes)
+        {
+            var hotels = (await _hotelService.GetAllAsync()).Items;
+
+            var roomTypes = pagedRoomTypes.Select(inventory =>
+            {
+                var dto = inventory.ToDto();
+                dto.HotelName = hotels?.FirstOrDefault(x => x?.Id == dto.HotelId)?.Name;
+                dto.HotelCode = hotels?.FirstOrDefault(x => x?.Id == dto.HotelId)?.Code;
+
+                return dto;
+
+            }).ToList();
+
+            return roomTypes;
         }
     }
 }

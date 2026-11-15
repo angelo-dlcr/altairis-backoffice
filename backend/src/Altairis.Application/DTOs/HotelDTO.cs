@@ -15,7 +15,6 @@ namespace Altairis.Application.DTOs
         public string? Address { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTime CreationDate { get; set; }
-
-        public IEnumerable<RoomType> RoomTypes { get; set; } = new List<RoomType>();
+        public IEnumerable<RoomTypeDTO>? RoomTypes { get; set; } = null;
     }
 }

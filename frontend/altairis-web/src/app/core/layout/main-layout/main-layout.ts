@@ -10,6 +10,7 @@ import { SidebarMenuComponent } from '../sidebar-menu/sidebar-menu';
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss'
 })
+
 export class MainLayoutComponent {
 
   sidebarOpen = false;

@@ -1,1 +1,126 @@
-<p>room-type-list-page works!</p>
+<h2>Listado de Habitaciones</h2>
+
+<app-room-types-filters-component
+    (onFilter)="filterRoomTypes($event)"
+    (onClear)="removeFilters()"
+>
+</app-room-types-filters-component>
+
+<hr>
+
+@if(!isLoading()) {
+    <div class="row mb-5 position-relative" style="height: 25px;">
+        <a class="btn btn-outline-primary fw-semibold rounded w-auto d-flex align-items-center gap-2 pt-2 pb-2 position-absolute end-0 me-4">
+            <i class="bi bi-plus-lg"></i>
+            <span>Crear hotel</span>
+        </a>
+    </div>
+}
+<div class="container mt-5 mb-3 h-100">
+    @if(isLoading()) {
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="visually-hidden">Cargando registros...</span>
+            </div>
+        </div>
+    }
+    @else {
+        @if(error()){
+            <p class="text-danger"><i class="bi bi-exclamation-circle"></i> Ocurrió un error al conectar con el servidor.</p>
+        }
+        @else if(data()?.totalCount! <= 0){
+            <p class="text-secondary-emphasis">No hay registos que coincidan con la búsqueda.</p>
+        }
+        @else {
+            <div class="overflow-visible">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="text-center">
+                            <th scope="col">Codigo</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Hotel</th>
+                            <th scope="col">Capacidad máxima</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (roomType of data()?.items; track roomType.id) {
+                            <tr class="text-center">
+                                <td scope="row">{{roomType.code}}</td>
+                                <td scope="row">{{roomType.name}}</td>
+                                <td scope="row">{{roomType.hotelName}}</td>
+                                <td scope="row">{{roomType.maxOccupancy}}</td>
+                                <td scope="row">
+                                    @switch (roomType.isActive) {
+                                        @case (true) {
+                                            <span class="badge rounded-pill text-success bg-success-subtle badge">
+                                                Activo
+                                            </span>
+                                        }
+                                        @case (false) {
+                                            <span class="badge rounded-pill text-danger bg-danger-subtle badge">
+                                                Inactivo
+                                            </span>
+                                        }
+                                    }
+                                </td>
+                                <td scope="row">
+                                    <div class="dropdown">
+                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-gear me-2"></i>
+                                        </a>
+
+                                        <ul class="dropdown-menu dropdown-menu-dark" style="cursor: pointer;">
+                                            <li>
+                                                <a class="dropdown-item">
+                                                    <i class="bi bi-eye me-2"></i>
+                                                    Ver
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a class="dropdown-item">
+                                                    <i class="bi bi-pencil me-2"></i>
+                                                    Editar
+                                                </a>
+                                            </li>
+                                            
+                                            @if (!roomType.isActive) 
+                                            {
+                                                <li>
+                                                    <a class="dropdown-item">
+                                                        <i class="bi bi-power me-2"></i>
+                                                        Activar
+                                                    </a>
+                                                </li> 
+                                            }
+
+                                            @if (roomType.isActive) 
+                                            {
+                                                 <li>
+                                                    <a class="dropdown-item">
+                                                        <i class="bi bi-power me-2"></i>
+                                                        Desactivar
+                                                    </a>
+                                                </li> 
+                                            }
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <app-pagination-component
+                [totalCount]="data()?.totalCount ?? 0"
+                [pageNumber]="data()?.pageNumber ?? 1"
+                [pageSize]="data()?.pageSize ?? pagination()?.pageSize ?? 10"
+                [totalPages]="data()?.totalPages ?? 0"
+                (pageChange)="onPageChange($event)"
+            >
+            </app-pagination-component>
+        }
+    }
+</div>

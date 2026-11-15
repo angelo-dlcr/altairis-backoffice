@@ -12,20 +12,32 @@ namespace Altairis.Application.Helpers.MappingExtensions
         {
             Id = entity.Id,
             CreationDate = entity.CreationDate,
-            RoomType = entity.RoomType,
             RoomTypeId = entity.RoomTypeId,
             StayDate = entity.StayDate,
-            TotalUnits = entity.TotalUnits
+            TotalUnits = entity.TotalUnits,
+            //RoomType = entity.RoomType.ToDto(),
+        };
+
+        public static DailyInventoryDTO ToDto(this DailyInventory entity, int reservedUnits) => new()
+        {
+            Id = entity.Id,
+            CreationDate = entity.CreationDate,
+            RoomTypeId = entity.RoomTypeId,
+            StayDate = entity.StayDate,
+            TotalUnits = entity.TotalUnits,
+            ReservedUnits = reservedUnits,
+            AvailableUnits = (entity.TotalUnits - reservedUnits) <= 0 ? 0 : entity.TotalUnits - reservedUnits,
+            //RoomType = entity.RoomType.ToDto(),
         };
 
         public static DailyInventory ToEntity(this DailyInventoryDTO dto) => new()
         {
             Id = dto.Id,
             CreationDate = dto.CreationDate,
-            RoomType = dto.RoomType,
             RoomTypeId = dto.RoomTypeId,
             StayDate = dto.StayDate,
-            TotalUnits = dto.TotalUnits
+            TotalUnits = dto.TotalUnits,
+            //RoomType = dto.RoomType.ToEntity(),
         };
     }
 }

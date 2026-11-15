@@ -31,7 +31,7 @@ namespace Altairis.Api.Controllers
                 : BadRequest(response);
         }
 
-        [HttpGet(nameof(GetAll))]
+        [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
 
 
