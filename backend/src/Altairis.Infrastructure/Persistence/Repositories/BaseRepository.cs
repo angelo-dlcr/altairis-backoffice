@@ -25,10 +25,13 @@ namespace Altairis.Infrastructure.Persistence.Repositories
         public async Task<IReadOnlyList<T>?> GetAllOrderedByAsync(
             Expression<Func<T, object>>? orderBy,
             bool isDescending = false,
+            bool ignoreAutoIncludes = true,
             CancellationToken cancellationToken = default
         )
         {
-            var query = _dbSet.AsNoTracking().IgnoreAutoIncludes().AsQueryable();
+            var query = ignoreAutoIncludes
+                ? _dbSet.AsNoTracking().IgnoreAutoIncludes().AsQueryable()
+                : _dbSet.AsNoTracking().AsQueryable();
 
             if (orderBy is not null)
             {
@@ -53,10 +56,13 @@ namespace Altairis.Infrastructure.Persistence.Repositories
             Expression<Func<T, bool>> predicate,
             Expression<Func<T, object>>? orderBy,
             bool isDescending = false,
+            bool ignoreAutoIncludes = true,
             CancellationToken cancellationToken = default
         )
         {
-            var query = _dbSet.AsNoTracking().IgnoreAutoIncludes().AsQueryable();
+            var query = ignoreAutoIncludes
+                ? _dbSet.AsNoTracking().IgnoreAutoIncludes().AsQueryable()
+                : _dbSet.AsNoTracking().AsQueryable();
 
             query = query.Where(predicate);
 
@@ -73,8 +79,11 @@ namespace Altairis.Infrastructure.Persistence.Repositories
         public async Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
             => await _dbSet.FindAsync(id, cancellationToken);
 
-        public async Task<bool> ExistsBy(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+        public async Task<bool> ExistsByAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
             => await _dbSet.AsNoTracking().AnyAsync(predicate, cancellationToken);
+
+        public async Task<IReadOnlyList<object>?> GetAllDistinctByAsync(Expression<Func<T, object>> keySelector, CancellationToken cancellationToken = default)
+            => await _dbSet.Select(keySelector).Distinct().ToListAsync();
 
         public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
         {

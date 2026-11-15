@@ -18,7 +18,7 @@ import {
   HotelFilters
 } from '../models/hotel.model';
 import { PaginationParams } from '../../../shared/models/pagination-params-model';
-import { PagedListApiResponse } from '../../../shared/models/api-response.model';
+import { ListApiResponse, PagedListApiResponse } from '../../../shared/models/api-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,18 +27,20 @@ export class HotelApiService {
 
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl =
-    `${environment.apiUrl}/Hotel`;
+  private readonly apiUrl = `${environment.apiUrl}/Hotel`;
 
-  getAll(): Observable<Hotel[]> {
-    return this.http.get<Hotel[]>(this.apiUrl);
+  getAll(): Observable<ListApiResponse<Hotel>> {
+    return this.http.get<ListApiResponse<Hotel>>(this.apiUrl);
   }
 
   getById(id: number): Observable<Hotel> {
     return this.http.get<Hotel>(`${this.apiUrl}/${id}`);
   }
 
-  getAllPaged(pagination: PaginationParams, filters: HotelFilters | undefined): Observable<PagedListApiResponse<Hotel>> 
+  getAllPaged(
+    pagination: PaginationParams, 
+    filters: HotelFilters | undefined
+  ) : Observable<PagedListApiResponse<Hotel>> 
   {
     const unifiedParams = {
       ...pagination,

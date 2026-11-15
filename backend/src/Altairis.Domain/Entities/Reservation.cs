@@ -18,6 +18,6 @@ namespace Altairis.Domain.Entities
         public ReservationStatus Status { get; set; } = ReservationStatus.Pending;
         public DateTime CreationDate { get; set; }
 
-        public RoomType RoomType { get; set; } = null!;
+        public RoomType? RoomType { get; set; } = null!;
     }
 }

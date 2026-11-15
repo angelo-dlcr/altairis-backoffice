@@ -13,14 +13,14 @@ namespace Altairis.Application.Helpers.MappingExtensions
             Id = entity.Id,
             Code = entity.Code,
             CreationDate = entity.CreationDate,
-            //DailyInventories = entity.DailyInventories,
             Description = entity.Description,
-            //Hotel = entity.Hotel,
             HotelId = entity.HotelId,
             IsActive = entity.IsActive,
             MaxOccupancy = entity.MaxOccupancy,
-            Name = entity.Name
-            //Reservations = entity.Reservations
+            Name = entity.Name,
+            //Hotel = entity.Hotel?.ToDto(),
+            //DailyInventories = entity.DailyInventories?.Select(x => x.ToDto()).ToList(),
+            //Reservations = entity.Reservations?.Select(x => x.ToDto()).ToList(),
         };
 
         public static RoomType ToEntity(this RoomTypeDTO dto) => new()
@@ -28,14 +28,14 @@ namespace Altairis.Application.Helpers.MappingExtensions
             Id = dto.Id,
             Code = dto.Code,
             CreationDate = dto.CreationDate,
-            //DailyInventories = dto.DailyInventories,
             Description = dto.Description,
-            //Hotel = dto.Hotel,
             HotelId = dto.HotelId,
             IsActive = dto.IsActive,
             MaxOccupancy = dto.MaxOccupancy,
-            Name = dto.Name
-            //Reservations = dto.Reservations
+            Name = dto.Name,
+            //Hotel = dto.Hotel?.ToEntity(),
+            //DailyInventories = dto.DailyInventories,
+            //Reservations = dto.Reservations,
         };
     }
 }

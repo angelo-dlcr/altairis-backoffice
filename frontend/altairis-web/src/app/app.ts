@@ -2,13 +2,15 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidebarMenuComponent } from './core/layout/sidebar-menu/sidebar-menu';
 import { MainHeaderComponent } from './core/layout/main-header/main-header';
+import { MainLayoutComponent } from './core/layout/main-layout/main-layout';
 
 @Component({
   imports: [
-    RouterOutlet, 
+    RouterOutlet,
     SidebarMenuComponent,
-    MainHeaderComponent
-  ],
+    MainHeaderComponent,
+    MainLayoutComponent
+],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',

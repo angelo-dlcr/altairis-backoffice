@@ -18,9 +18,9 @@ namespace Altairis.Application.Helpers.MappingExtensions
             GuestName = entity.GuestName,
             Reference = entity.Reference,
             RoomsCount = entity.RoomsCount,
-            RoomType = entity.RoomType,
             RoomTypeId = entity.RoomTypeId,
-            Status = entity.Status
+            Status = entity.Status,
+            RoomType = entity.RoomType?.ToDto(),
         };
 
         public static Reservation ToEntity(this ReservationDTO dto) => new()
@@ -33,9 +33,9 @@ namespace Altairis.Application.Helpers.MappingExtensions
             GuestName = dto.GuestName,
             Reference = dto.Reference,
             RoomsCount = dto.RoomsCount,
-            RoomType = dto.RoomType,
             RoomTypeId = dto.RoomTypeId,
-            Status = dto.Status
+            Status = dto.Status,
+            //RoomType = dto.RoomType?.ToEntity(),
         };
     }
 }

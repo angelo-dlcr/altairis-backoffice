@@ -18,7 +18,7 @@ namespace Altairis.Application.Helpers.MappingExtensions
             CreationDate = entity.CreationDate,
             IsActive = entity.IsActive,
             Name = entity.Name,
-            RoomTypes = entity.RoomTypes
+            RoomTypes = entity.RoomTypes?.Select(x => x.ToDto()).ToList()
         };
 
         public static Hotel ToEntity(this HotelDTO dto) => new()
@@ -31,7 +31,7 @@ namespace Altairis.Application.Helpers.MappingExtensions
             CreationDate = dto.CreationDate,
             IsActive = dto.IsActive,
             Name = dto.Name,
-            RoomTypes = dto.RoomTypes
+            //RoomTypes = dto.RoomTypes?.Select(x => x.ToEntity()).ToList(),
         };
     }
 }

@@ -1,0 +1,70 @@
+
+<div class="container mt-5 mb-4">
+    <div class="row mb-3">
+        <div class=" col-md-4">
+            <label for="" class="form-label fw-semibold">Tipo de habitación:</label>
+            <input
+                type="text"
+                class="form-control"
+                id="roomTypeCode"
+                [(ngModel)]="filters().roomTypeCode"
+                (ngModelChange)="updateFilterField('roomTypeCode', $event)"
+                placeholder=""
+            />
+        </div>
+        <!-- <div class="col-md-4">
+            <label for="" class="form-label fw-semibold">Estadía:</label>
+            <input
+                type="date"
+                class="form-control"
+                id="stayDate"
+                [(ngModel)]="filters().stayDate"
+                (ngModelChange)="updateFilterField('stayDate', $event)"
+                placeholder=""
+            />
+        </div> -->
+        <div class="col-md-4">
+            <label for="" class="form-label fw-semibold">Estadia desde:</label>
+            <input
+                type="date"
+                class="form-control"
+                id="startDate"
+                [(ngModel)]="filters().startDate"
+                (ngModelChange)="updateFilterField('startDate', $event)"
+                placeholder=""
+            />
+        </div>
+        <div class="col-md-4">
+            <label for="" class="form-label fw-semibold">Estadía hasta:</label>
+            <input
+                type="date"
+                class="form-control"
+                id="endDate"
+                [(ngModel)]="filters().endDate"
+                (ngModelChange)="updateFilterField('endDate', $event)"
+                placeholder=""
+            />
+        </div>
+    </div>
+    
+    <div class="row mb-2">
+    </div>
+
+    <div class="row mt-5">
+        <div class="d-flex gap-3">
+            <input 
+                class="btn btn-primary" 
+                type="button" 
+                value="Filtrar búsqueda"
+                (click)="sendFilters()"
+            />
+            
+            <input 
+                class="btn btn-secondary" 
+                type="button" 
+                value="Limpiar filtros"
+                (click)="clearFilters()"
+            />
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 ﻿using Altairis.Application.DTOs;
+using Altairis.Application.DTOs.Filters;
 using Altairis.Application.Helpers;
 using Altairis.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace Altairis.Api.Controllers
             _service = service;
         }
 
-        [HttpGet(nameof(GetById))]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromQuery] int id)
         {
             var response = await _service.GetByIdAsync(id);
@@ -30,13 +31,12 @@ namespace Altairis.Api.Controllers
                 : BadRequest(response);
         }
 
-        [HttpGet(nameof(GetAll))]
+        [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
 
-
         [HttpGet(nameof(GetAllPaged))]
-        public async Task<IActionResult> GetAllPaged([FromQuery] PaginationFilters pagination) 
-            => Ok(await _service.GetAllPagedAsync(pagination));
+        public async Task<IActionResult> GetAllPaged([FromQuery] PaginationFilters pagination, [FromQuery] RoomTypeFiltersDTO? filter = null) 
+            => Ok(await _service.GetAllPagedAsync(pagination, filter));
 
     }
 }

@@ -15,6 +15,6 @@ namespace Altairis.Domain.Entities
         public bool IsActive { get; set; } = true;
         public DateTime CreationDate { get; set; }
 
-        public IEnumerable<RoomType> RoomTypes { get; set; } = new List<RoomType>();
+        public IEnumerable<RoomType>? RoomTypes { get; set; } = null;
     }
 }

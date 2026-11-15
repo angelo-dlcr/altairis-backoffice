@@ -1,0 +1,97 @@
+
+<div class="container mt-5 mb-4">
+    <div class="row mb-3">
+        <div class=" col-md-4">
+            <label for="" class="form-label fw-semibold">Referencia:</label>
+            <input
+                type="text"
+                class="form-control"
+                id="reference"
+                [(ngModel)]="filters().reference"
+                (ngModelChange)="updateFilterField('reference', $event)"
+                placeholder=""
+            />
+        </div>
+        <div class="col-md-4">
+            <label for="" class="form-label fw-semibold">Tipo de habitación:</label>
+            <input
+                type="text"
+                class="form-control"
+                id="roomTypeCode"
+                [(ngModel)]="filters().roomTypeCode"
+                (ngModelChange)="updateFilterField('roomTypeCode', $event)"
+                placeholder=""
+            />
+        </div>
+        <div class="col-md-4">
+            <label for="" class="form-label fw-semibold">Nombre de huésped:</label>
+            <input
+                type="text"
+                class="form-control"
+                id="guestName"
+                [(ngModel)]="filters().guestName"
+                (ngModelChange)="updateFilterField('guestName', $event)"
+                placeholder=""
+            />
+        </div>
+    </div>
+    
+    <div class="row mb-2">
+        <div class="col-md-4">
+            <label for="" class="form-label fw-semibold">Estado</label>
+            <select
+                class="form-select"
+                id="status"
+                [ngModel]="filters().status"
+                (ngModelChange)="updateFilterField('status', $event)"
+            >
+                <option value=null>Todos</option>
+
+                @for (status of statuses; track status){
+                    <option [value]="status">{{statusLabels[status]}}</option>
+                }
+            </select>
+        </div>
+        
+        <div class="col-md-4">
+            <label for="" class="form-label fw-semibold">Check-In desde:</label>
+            <input
+                type="date"
+                class="form-control"
+                id="checkInDate"
+                [(ngModel)]="filters().checkInDate"
+                (ngModelChange)="updateFilterField('checkInDate', $event)"
+                placeholder=""
+            />
+        </div>
+        <div class="col-md-4">
+            <label for="" class="form-label fw-semibold">Check-In hasta:</label>
+            <input
+                type="date"
+                class="form-control"
+                id="checkOutDate"
+                [(ngModel)]="filters().checkOutDate"
+                (ngModelChange)="updateFilterField('checkOutDate', $event)"
+                placeholder=""
+            />
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="d-flex gap-3">
+            <input 
+                class="btn btn-primary" 
+                type="button" 
+                value="Filtrar búsqueda"
+                (click)="sendFilters()"
+            />
+            
+            <input 
+                class="btn btn-secondary" 
+                type="button" 
+                value="Limpiar filtros"
+                (click)="clearFilters()"
+            />
+        </div>
+    </div>
+</div>
