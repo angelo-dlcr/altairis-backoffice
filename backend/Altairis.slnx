@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Altairis.Api/Altairis.Api.csproj" />
+    <Project Path="src/Altairis.Application/Altairis.Application.csproj" Id="cc475d3f-e610-4732-a4dc-c867c28243fa" />
+    <Project Path="src/Altairis.Domain/Altairis.Domain.csproj" Id="7bb92167-62e3-4383-a03f-0106075bcc43" />
+    <Project Path="src/Altairis.Infrastructure/Altairis.Infrastructure.csproj" Id="19392a8a-9a6a-478c-b9f4-3190ff5a1225" />
+  </Folder>
+</Solution>

@@ -1,0 +1,20 @@
+.app-layout {
+  display: flex;         // 👈 Alinea el sidebar y el contenido en fila (horizontal)
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;      // Evita barras de scroll extrañas en el layout principal
+
+  &__content {
+    flex: 1;             // 👈 Ocupa TODO el espacio restante a la derecha
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f8f9fa; // Un fondo gris claro muy sutil para las páginas
+  }
+}
+
+.main-page {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}

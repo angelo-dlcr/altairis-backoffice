@@ -1,0 +1,56 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: altairis-sqlserver
+    hostname: altairis-sqlserver
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    ports:
+      - "14330:1433"
+    volumes:
+      - altairis_sqlserver_data:/var/opt/mssql
+
+
+  api:
+    build:
+      context: ./backend  
+      dockerfile: Dockerfile
+    container_name: altairis-api
+    ports:
+      - "5212:5212"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5212"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=AltairisDb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;"
+    volumes:
+      - ./backend:/backend
+      - /backend/src/Altairis.Api/obj/
+      - /backend/src/Altairis.Api/bin/
+      - /backend/src/Altairis.Application/obj/
+      - /backend/src/Altairis.Application/bin/
+      - /backend/src/Altairis.Domain/obj/
+      - /backend/src/Altairis.Domain/bin/
+      - /backend/src/Altairis.Infrastructure/obj/
+      - /backend/src/Altairis.Infrastructure/bin/
+    depends_on:
+      - sqlserver
+
+
+  frontend:
+    build:
+      context: ./frontend/altairis-web
+      dockerfile: Dockerfile
+    container_name: altairis-frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend/altairis-web:/app
+      - /app/node_modules
+    depends_on:
+      - api
+
+volumes:
+  altairis_sqlserver_data:
