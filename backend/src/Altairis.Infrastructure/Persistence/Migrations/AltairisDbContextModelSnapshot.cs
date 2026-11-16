@@ -237,11 +237,10 @@ namespace Altairis.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Altairis.Domain.Entities.DailyInventory", b =>
                 {
                     b.HasOne("Altairis.Domain.Entities.RoomType", "RoomType")
-                        .WithMany("DailyInventories")
+                        .WithMany()
                         .HasForeignKey("RoomTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_DailyInventory_RoomTypes_RoomTypeId");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("RoomType");
                 });
@@ -249,11 +248,10 @@ namespace Altairis.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Altairis.Domain.Entities.Reservation", b =>
                 {
                     b.HasOne("Altairis.Domain.Entities.RoomType", "RoomType")
-                        .WithMany("Reservations")
+                        .WithMany()
                         .HasForeignKey("RoomTypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_Reservations_RoomTypes_RoomTypeId");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("RoomType");
                 });
@@ -263,9 +261,8 @@ namespace Altairis.Infrastructure.Persistence.Migrations
                     b.HasOne("Altairis.Domain.Entities.Hotel", "Hotel")
                         .WithMany("RoomTypes")
                         .HasForeignKey("HotelId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_RoomTypes_Hotels_HotelId");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Hotel");
                 });
@@ -273,13 +270,6 @@ namespace Altairis.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Altairis.Domain.Entities.Hotel", b =>
                 {
                     b.Navigation("RoomTypes");
-                });
-
-            modelBuilder.Entity("Altairis.Domain.Entities.RoomType", b =>
-                {
-                    b.Navigation("DailyInventories");
-
-                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }

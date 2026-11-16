@@ -85,13 +85,21 @@ namespace Altairis.Infrastructure.Persistence.Repositories
         public async Task<IReadOnlyList<object>?> GetAllDistinctByAsync(Expression<Func<T, object>> keySelector, CancellationToken cancellationToken = default)
             => await _dbSet.Select(keySelector).Distinct().ToListAsync();
 
-        public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
+        public async Task<bool> AddAsync(T entity, CancellationToken cancellationToken = default)
         {
             await _dbSet.AddAsync(entity, cancellationToken);
-            
+            var entityCreated = await _context.SaveChangesAsync();
+
+            return entityCreated > 0;
         }
 
-        public void Update(T entity) => _dbSet.Update(entity);
+        public bool Update(T entity)
+        {
+            _dbSet.Update(entity);
+            var entityUpdated = _context.SaveChanges();
+
+            return entityUpdated > 0;
+        }
 
         public void Delete(T entity) => _dbSet.Remove(entity);
     }

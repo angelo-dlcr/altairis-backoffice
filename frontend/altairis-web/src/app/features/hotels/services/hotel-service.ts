@@ -18,7 +18,7 @@ import {
   HotelFilters
 } from '../models/hotel.model';
 import { PaginationParams } from '../../../shared/models/pagination-params-model';
-import { ListApiResponse, PagedListApiResponse } from '../../../shared/models/api-response.model';
+import { ListApiResponse, PagedListApiResponse, SingleApiResponse } from '../../../shared/models/api-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -55,26 +55,17 @@ export class HotelApiService {
     );
   }
 
-  create(request: CreateHotelRequest): Observable<Hotel> {
-    return this.http.post<Hotel>(
-      this.apiUrl,
+  create(request: CreateHotelRequest): Observable<SingleApiResponse<boolean>> {
+    return this.http.post<SingleApiResponse<boolean>>(
+      `${this.apiUrl}/Create`,
       request
     );
   }
 
-  update(
-    id: number,
-    request: UpdateHotelRequest
-  ): Observable<Hotel> {
-    return this.http.put<Hotel>(
-      `${this.apiUrl}/${id}`,
-      request
-    );
-  }
-
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(
-      `${this.apiUrl}/${id}`
+  changeStatus(id: number, activate: boolean): Observable<SingleApiResponse<boolean>> {
+    return this.http.put<SingleApiResponse<boolean>>(
+      `${this.apiUrl}/ChangeStatus/${id}`,
+      activate
     );
   }
 

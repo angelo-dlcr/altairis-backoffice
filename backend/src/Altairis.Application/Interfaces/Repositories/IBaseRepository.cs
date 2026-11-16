@@ -30,9 +30,9 @@ namespace Altairis.Application.Interfaces.Repositories
 
         Task<IReadOnlyList<object>?> GetAllDistinctByAsync(Expression<Func<T, object>> keySelector, CancellationToken cancellationToken = default);
 
-        Task AddAsync(T entity, CancellationToken cancellationToken = default);
+        Task<bool> AddAsync(T entity, CancellationToken cancellationToken = default);
         
-        void Update(T entity);
+        bool Update(T entity);
         
         void Delete(T entity);
     }

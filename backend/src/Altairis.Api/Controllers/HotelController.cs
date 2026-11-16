@@ -31,13 +31,63 @@ namespace Altairis.Api.Controllers
                 : BadRequest(response);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
+        [HttpGet(nameof(GetAll))]
+        public async Task<IActionResult> GetAll() 
+            => Ok(await _service.GetAllAsync());
 
 
         [HttpGet(nameof(GetAllPaged))]
-        public async Task<IActionResult> GetAllPaged([FromQuery] PaginationFilters pagination, [FromQuery] HotelFiltersDTO? filter = null) 
-            => Ok(await _service.GetAllPagedAsync(pagination, filter));
+        public async Task<IActionResult> GetAllPaged(
+            [FromQuery] PaginationFilters pagination, 
+            [FromQuery] HotelFiltersDTO? filter = null) 
+        => Ok(await _service.GetAllPagedAsync(pagination, filter));
+
+
+        [HttpPost(nameof(Create))]
+        public async Task<IActionResult> Create([FromBody] HotelDTO hotel)
+        {
+            var response = await _service.AddAsync(hotel);
+
+            return response.Success
+                ? Ok(response)
+                : BadRequest(response);
+        }
+
+        [HttpPut(nameof(Update))]
+        public async Task<IActionResult> Update([FromBody] HotelDTO hotel)
+        {
+            var response = await _service.AddAsync(hotel);
+
+            return response.Success
+                ? Ok(response)
+                : BadRequest(response);
+        }
+
+        [HttpPut("ChangeStatus/{id:int}")]
+        public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] bool activate)
+        {
+            var response = await _service.ChangeStatusAsync(id, activate);
+
+            switch (response.StatusCode)
+            {
+                case (HttpStatusCode.NotFound):
+                    {
+                        return NotFound(response);
+                    }
+                case (HttpStatusCode.BadRequest):
+                    {
+                        return BadRequest(response);
+                    }
+                case (HttpStatusCode.InternalServerError):
+                    {
+                        return Conflict(response);
+                    }
+                default:
+                    {
+                        return Ok(response);
+                    }
+            }
+        }
 
     }
 }

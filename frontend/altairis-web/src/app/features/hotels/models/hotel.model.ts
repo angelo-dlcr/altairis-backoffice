@@ -18,6 +18,7 @@ export interface CreateHotelRequest {
 }
 
 export interface UpdateHotelRequest extends CreateHotelRequest {
+  id: number;
   isActive: boolean;
 }
 

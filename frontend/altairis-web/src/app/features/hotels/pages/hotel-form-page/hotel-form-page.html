@@ -1,0 +1,131 @@
+<form
+    id="hotelCreationForm"
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    class="needs-validation g-3"
+>
+    <div class="mb-3 w-100">
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <label 
+                    for="code" 
+                    class="form-label"
+                > 
+                    Código 
+                    <span class="text-danger">*</span>
+                </label>
+                <input
+                    id="code"
+                    formControlName="code"
+                    type="text" 
+                    class="form-control"
+                    [class.is-invalid]="form.get('code')?.invalid && form.get('code')?.touched"
+                    [class.is-valid]="form.get('code')?.valid && form.get('code')?.touched"
+                >
+                <div class="invalid-feedback">Campo requerido</div>
+            </div>
+            <div class="col-md-6">
+                <label 
+                    for="name" 
+                    class="form-label"
+                > 
+                    Nombre 
+                    <span class="text-danger">*</span>
+                </label>
+                <input
+                    id="name"
+                    formControlName="name"
+                    type="text" 
+                    class="form-control" 
+                    required 
+                    [class.is-invalid]="form.get('name')?.invalid && form.get('name')?.touched"
+                    [class.is-valid]="form.get('name')?.valid && form.get('name')?.touched"
+                >
+                <div class="invalid-feedback">Campo requerido</div>
+            </div>
+        </div>
+
+        
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <label 
+                    for="country" 
+                    class="form-label"
+                > 
+                    País 
+                    <span class="text-danger">*</span>
+                </label>
+                <input
+                    id="country"
+                    formControlName="country"
+                    type="text" 
+                    class="form-control" 
+                    required 
+                    [class.is-invalid]="form.get('country')?.invalid && form.get('country')?.touched"
+                    [class.is-valid]="form.get('country')?.valid && form.get('country')?.touched"
+                >
+                <div class="invalid-feedback">Campo requerido</div>
+            </div>
+            <div class="col-md-6">
+                <label 
+                    for="city" 
+                    class="form-label"
+                > 
+                    Ciudad 
+                    <span class="text-danger">*</span>
+                </label>
+                <input
+                    id="city"
+                    formControlName="city"
+                    type="text" 
+                    class="form-control" 
+                    required 
+                    [class.is-invalid]="form.get('city')?.invalid && form.get('city')?.touched"
+                    [class.is-valid]="form.get('city')?.valid && form.get('city')?.touched"
+                >
+                <div class="invalid-feedback">Campo requerido</div>
+            </div>
+        </div>
+
+        <div class="row mt-3 d-flex align-items-end">
+            <div class="col-md-6">
+                <label 
+                    for="address" 
+                    class="form-label"
+                > 
+                    Dirección 
+                    <span class="text-secondary">(Opcional)</span>
+                </label>
+                <input
+                    id="address"
+                    formControlName="address"
+                    type="text" 
+                    class="form-control" 
+                    /* [class.is-invalid]="form.get('address')?.invalid && form.get('address')?.touched" */
+                    [class.is-valid]="form.get('address')?.valid && form.get('address')?.touched"
+                >
+            </div>
+            
+            <div class="col-md-3">
+                <div class="form-check form-switch ms-3">
+                    <input
+                        id="isActive"
+                        formControlName="isActive"
+                        type="checkbox" 
+                        class="form-check-input mb-2" 
+                        style="transform: scale(1.5);"
+                        role="button"
+                        checked="form.value.get('isActive')"
+                    >
+                    <label 
+                        for="isActive" 
+                        class="form-check-label ms-3"
+                    > Activar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+</form>

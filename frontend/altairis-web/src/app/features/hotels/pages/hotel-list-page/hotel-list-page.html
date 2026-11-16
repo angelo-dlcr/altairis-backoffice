@@ -1,22 +1,27 @@
 <h2>Listado de Hoteles</h2>
 
-<app-hotel-filters-component
-    (onFilter)="filterHotels($event)"
-    (onClear)="removeFilters()"
->
-</app-hotel-filters-component>
+<!-- <div class="container mt-5 mb-3 h-100"> -->
+    
+    <app-hotel-filters-component
+        (onFilter)="filterHotels($event)"
+        (onClear)="removeFilters()"
+    >
+    </app-hotel-filters-component>
+    
+    <hr>
 
-<hr>
+    @if(!isLoading()) {
+        <div class="row mb-5 position-relative" style="height: 25px;">
+            <a 
+                class="btn btn-outline-primary fw-semibold rounded w-auto d-flex align-items-center gap-2 pt-2 pb-2 position-absolute end-0 me-4"
+                (click)="openModal()"
+            >
+                <i class="bi bi-plus-lg"></i>
+                <span>Crear hotel</span>
+            </a>
+        </div>
+    }
 
-@if(!isLoading()) {
-    <div class="row mb-5 position-relative" style="height: 25px;">
-        <a class="btn btn-outline-primary fw-semibold rounded w-auto d-flex align-items-center gap-2 pt-2 pb-2 position-absolute end-0 me-4">
-            <i class="bi bi-plus-lg"></i>
-            <span>Crear hotel</span>
-        </a>
-    </div>
-}
-<div class="container mt-5 mb-3 h-100">
     @if(isLoading()) {
         <div class="d-flex justify-content-center">
             <div class="spinner-border text-secondary" role="status">
@@ -26,7 +31,7 @@
     }
     @else {
         @if(error()){
-            <p class="text-danger"><i class="bi bi-exclamation-circle"></i> Ocurrió un error al conectar con el servidor.</p>
+            <p class="text-danger"><i class="bi bi-exclamation-circle"></i> Fallo al conectar con el servidor..</p>
         }
         @else if(data()?.totalCount! <= 0){
             <p class="text-secondary-emphasis">No hay registos que coincidan con la búsqueda.</p>
@@ -71,23 +76,23 @@
                                             <i class="bi bi-gear me-2"></i>
                                         </a>
 
-                                        <ul class="dropdown-menu dropdown-menu-dark" style="cursor: pointer;">
+                                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="cursor: pointer;">
                                             <li>
-                                                <a class="dropdown-item">
+                                                <a class="dropdown-item" (click)="view(hotel)">
                                                     <i class="bi bi-eye me-2"></i>
                                                     Ver
                                                 </a>
                                             </li>
 
-                                            <li>
+                                            <!-- <li>
                                                 <a class="dropdown-item">
                                                     <i class="bi bi-house-gear me-2"></i>
                                                     Ver habitaciones
                                                 </a>
-                                            </li>
+                                            </li> -->
 
                                             <li>
-                                                <a class="dropdown-item">
+                                                <a class="dropdown-item disabled" (click)="edit(hotel)" aria-disabled="true" >
                                                     <i class="bi bi-pencil me-2"></i>
                                                     Editar
                                                 </a>
@@ -96,7 +101,7 @@
                                             @if (!hotel.isActive) 
                                             {
                                                 <li>
-                                                    <a class="dropdown-item">
+                                                    <a class="dropdown-item" (click)="activate(hotel.id)">
                                                         <i class="bi bi-power me-2"></i>
                                                         Activar
                                                     </a>
@@ -106,7 +111,7 @@
                                             @if (hotel.isActive) 
                                             {
                                                  <li>
-                                                    <a class="dropdown-item">
+                                                    <a class="dropdown-item" (click)="deactivate(hotel.id)" >
                                                         <i class="bi bi-power me-2"></i>
                                                         Desactivar
                                                     </a>
@@ -130,4 +135,86 @@
             </app-pagination-component>
         }
     }
-</div>
+<!-- </div> -->
+
+<app-modal-component
+    title="{{(selectedHotel() == null || selectedHotel() == undefined) 
+        ? 'Alta de Hotel' 
+        : (`(${selectedHotel()?.code}) ${selectedHotel()?.name}`).toUpperCase()
+    }}"
+    size="lg"
+    (closed)="onModalClosed()"
+>
+    <app-hotel-form-page 
+        modal-body
+        [editing]="isEdition()"
+        [viewing]="isView()"
+        [currentHotel]="selectedHotel()"
+
+        (saved)="onHotelSaved($event)"
+        (close)="creationModal().close()"
+        (isFormValid)="checkFormValid($event)"
+        (loading)="isFormLoading.set($event)"
+    />
+    
+    @if (!isView()) {
+        <div class="modal-footer" modal-footer>
+            <button 
+                type="button" 
+                class="btn btn-secondary" 
+                (click)="creationModal().close()"
+                [disabled]="isFormLoading()"
+            >
+                Cancelar
+            </button>
+            
+            <button 
+                type="submit" 
+                form="hotelCreationForm" 
+                class="btn btn-primary"
+                [disabled]="!isFormValid || isFormLoading()"
+            >
+                @if (isFormLoading()){ <div class="spinner-border spinner-border-sm text-light" role="status"></div> }
+                Confirmar
+            </button>
+        </div>
+    }
+</app-modal-component>
+
+
+<!-- 
+<app-modal-component
+    title="Hotel"
+    size="lg"
+    (closed)="onModalClosed()"
+>
+    <app-hotel-form-page 
+        modal-body
+        [editing]="isEdition"
+        (saved)="onHotelSaved($event)"
+        (close)="creationModal().close()"
+        (isFormValid)="checkFormValid($event)"
+        (loading)="isFormLoading.set($event)"
+    />
+    
+    <div class="modal-footer" modal-footer>
+        <button 
+            type="button" 
+            class="btn btn-secondary" 
+            (click)="creationModal().close()"
+            [disabled]="isFormLoading()"
+        >
+            Cancelar
+        </button>
+        
+        <button 
+            type="submit" 
+            form="hotelCreationForm" 
+            class="btn btn-primary"
+            [disabled]="!isFormValid || isFormLoading()"
+        >
+            @if (isFormLoading()){ <div class="spinner-border spinner-border-sm text-light" role="status"></div> }
+            Confirmar
+        </button>
+    </div>
+</app-modal-component> -->

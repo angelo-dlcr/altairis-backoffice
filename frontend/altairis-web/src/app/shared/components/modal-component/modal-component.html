@@ -1,0 +1,40 @@
+
+<div 
+    #modal
+    class="modal fade" 
+    tabindex="-1" 
+    aria-hidden="true"
+    (hidden.bs.modal)="onHidden()"
+    data-bs-backdrop="static" 
+    data-bs-keyboard="false"
+>
+    <div 
+        class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+        [class.modal-md]="size() === 'md'"
+        [class.modal-lg]="size() === 'lg'"
+        [class.modal-xl]="size() === 'xl'"
+    >
+        <div class="modal-content p-lg-3">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                    {{ title() }}
+                </h1>
+
+                <button 
+                    type="button" 
+                    class="btn btn-close" 
+                    aria-label="Cancelar"
+                    (click)="close()"
+                ></button>
+            </div>
+        
+            <div class="modal-body">
+                <ng-content select="[modal-body]" />
+            </div>
+            
+            <!-- <div class="modal-footer"> -->
+                <ng-content select="[modal-footer]" />
+            <!-- </div> -->
+        </div>
+    </div>
+</div>
