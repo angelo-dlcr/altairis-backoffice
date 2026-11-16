@@ -3,13 +3,14 @@ import { RouterOutlet } from '@angular/router';
 import { SidebarMenuComponent } from './core/layout/sidebar-menu/sidebar-menu';
 import { MainHeaderComponent } from './core/layout/main-header/main-header';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout';
+import { ToastComponent } from './shared/components/toast-component/toast-component';
 
 @Component({
   imports: [
     RouterOutlet,
     SidebarMenuComponent,
     MainHeaderComponent,
-    MainLayoutComponent
+    ToastComponent
 ],
   selector: 'app-root',
   styleUrl: './app.scss',

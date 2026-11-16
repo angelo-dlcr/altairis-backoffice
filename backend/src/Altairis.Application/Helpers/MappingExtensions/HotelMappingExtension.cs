@@ -33,5 +33,15 @@ namespace Altairis.Application.Helpers.MappingExtensions
             Name = dto.Name,
             //RoomTypes = dto.RoomTypes?.Select(x => x.ToEntity()).ToList(),
         };
+
+        public static Hotel ToEntityCreate(this HotelDTO dto) => new()
+        {
+            Code = dto.Code,
+            Name = dto.Name,
+            Country = dto.Country,
+            City = dto.City,
+            Address = dto.Address,
+            IsActive = dto.IsActive,
+        };
     }
 }

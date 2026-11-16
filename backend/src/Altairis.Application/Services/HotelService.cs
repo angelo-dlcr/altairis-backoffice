@@ -104,7 +104,7 @@ namespace Altairis.Application.Services
                 return (hotels is not null && hotels.Any())
                     ? new PagedListApiResponse<HotelDTO>
                         {
-                            Items = hotels?.Skip(pagination.Skip).Take(pagination.Take).Select(h => h.ToDto())?.ToList(),
+                            Items = hotels?.Skip(pagination.Skip).Take(pagination.Take).Select(h => h.ToDto())?.ToList()!,
                             TotalCount = hotels?.Count ?? 0,
                             PageNumber = pagination.PageNumber,
                             PageSize = pagination.PageSize,
@@ -121,7 +121,86 @@ namespace Altairis.Application.Services
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
                     Success = false,
-                    Message = ex.Message,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
+        }
+    
+        public async Task<SingleApiResponse<bool>> AddAsync(HotelDTO dto)
+        {
+            try
+            {
+                var hotel = dto.ToEntityCreate();
+
+                var success = await _repository.AddAsync(hotel);
+                
+                return success 
+                    ? new SingleApiResponse<bool>
+                    {
+                        Data = true,
+                        StatusCode = HttpStatusCode.OK,
+                        Message = "Registro creado exitosamente."
+                    }
+                    : new SingleApiResponse<bool>
+                    {
+                        Success = false,
+                        Message = "No se pudo guardar el registro",
+                        StatusCode = HttpStatusCode.BadRequest
+                    };
+            }
+            catch (Exception ex)
+            {
+                return new SingleApiResponse<bool>
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
+        }
+
+        public async Task<SingleApiResponse<bool>> ChangeStatusAsync(int id, bool activate)
+        {
+            try
+            {
+                var hotel = await _repository.GetByIdAsync(id);
+
+                if (hotel is not null)
+                {
+                    hotel?.IsActive = activate;
+                    var success = _repository.Update(hotel!);
+
+                    return success
+                        ? new SingleApiResponse<bool>
+                        {
+                            Data = true,
+                            StatusCode = HttpStatusCode.OK,
+                            Message = "Registro actualizado exitosamente."
+                        }
+                        : new SingleApiResponse<bool>
+                        {
+                            Success = false,
+                            Message = "No se pudo guardar el registro",
+                            StatusCode = HttpStatusCode.BadRequest
+                        };
+                }
+                else
+                {
+                    return new SingleApiResponse<bool>
+                    {
+                        Success = false,
+                        Message = "El registro indicado no existe.",
+                        StatusCode = HttpStatusCode.NotFound
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new SingleApiResponse<bool>
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
                 };
             }
         }
