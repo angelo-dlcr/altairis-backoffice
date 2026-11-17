@@ -37,5 +37,14 @@ namespace Altairis.Application.Helpers.MappingExtensions
             //DailyInventories = dto.DailyInventories,
             //Reservations = dto.Reservations,
         };
+
+        public static RoomType ToEntityCreate(this RoomTypeDTO dto) => new()
+        {
+            HotelId = dto.HotelId,
+            Code = dto.Code,
+            Name = dto.Name,
+            Description = dto.Description,
+            MaxOccupancy = dto.MaxOccupancy,
+        };
     }
 }

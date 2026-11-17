@@ -12,6 +12,7 @@ namespace Altairis.Application.Interfaces.Services
     {
         Task<SingleApiResponse<HotelDTO>> GetByIdAsync(int id);
         Task<ListApiResponse<HotelDTO>> GetAllAsync();
+        Task<ListApiResponse<HotelDTO>> GetAllActiveAsync();
         Task<PagedListApiResponse<HotelDTO>> GetAllPagedAsync(PaginationFilters pagination, HotelFiltersDTO? filter = null);
 
         Task<SingleApiResponse<bool>> AddAsync(HotelDTO dto);

@@ -38,5 +38,42 @@ namespace Altairis.Api.Controllers
         public async Task<IActionResult> GetAllPaged([FromQuery] PaginationFilters pagination, [FromQuery] RoomTypeFiltersDTO? filter = null) 
             => Ok(await _service.GetAllPagedAsync(pagination, filter));
 
+
+        [HttpPost(nameof(Create))]
+        public async Task<IActionResult> Create([FromBody] RoomTypeDTO roomType)
+        {
+            var response = await _service.AddAsync(roomType);
+
+            return response.Success
+                ? Ok(response)
+                : BadRequest(response);
+        }
+
+        [HttpPut("ChangeStatus/{id:int}")]
+        public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] bool activate)
+        {
+            var response = await _service.ChangeStatusAsync(id, activate);
+
+            switch (response.StatusCode)
+            {
+                case (HttpStatusCode.NotFound):
+                    {
+                        return NotFound(response);
+                    }
+                case (HttpStatusCode.BadRequest):
+                    {
+                        return BadRequest(response);
+                    }
+                case (HttpStatusCode.InternalServerError):
+                    {
+                        return Conflict(response);
+                    }
+                default:
+                    {
+                        return Ok(response);
+                    }
+            }
+        }
+
     }
 }

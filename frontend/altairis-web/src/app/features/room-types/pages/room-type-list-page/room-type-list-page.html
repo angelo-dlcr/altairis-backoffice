@@ -8,15 +8,19 @@
 
 <hr>
 
-@if(!isLoading()) {
-    <div class="row mb-5 position-relative" style="height: 25px;">
-        <a class="btn btn-outline-primary fw-semibold rounded w-auto d-flex align-items-center gap-2 pt-2 pb-2 position-absolute end-0 me-4">
-            <i class="bi bi-plus-lg"></i>
-            <span>Crear hotel</span>
-        </a>
-    </div>
-}
-<div class="container mt-5 mb-3 h-100">
+    @if(!isLoading()) {
+        <div class="row mb-5 position-relative" style="height: 25px;">
+            <a 
+                class="btn btn-outline-primary fw-semibold rounded w-auto d-flex align-items-center gap-2 pt-2 pb-2 position-absolute end-0 me-4"
+                (click)="openModal()"
+            >
+                <i class="bi bi-plus-lg"></i>
+                <span>Agregar</span>
+            </a>
+        </div>
+    }
+
+<!-- <div class="container mt-5 mb-3 h-100"> -->
     @if(isLoading()) {
         <div class="d-flex justify-content-center">
             <div class="spinner-border text-secondary" role="status">
@@ -52,18 +56,15 @@
                                 <td scope="row">{{roomType.hotelName}}</td>
                                 <td scope="row">{{roomType.maxOccupancy}}</td>
                                 <td scope="row">
-                                    @switch (roomType.isActive) {
-                                        @case (true) {
-                                            <span class="badge rounded-pill text-success bg-success-subtle badge">
-                                                Activo
-                                            </span>
-                                        }
-                                        @case (false) {
-                                            <span class="badge rounded-pill text-danger bg-danger-subtle badge">
-                                                Inactivo
-                                            </span>
-                                        }
-                                    }
+                                    <span 
+                                        class="badge rounded-pill badge"
+                                        [class]="{
+                                            'text-success': roomType.isActive, 'bg-success-subtle': roomType.isActive,
+                                            'text-danger': !roomType.isActive, 'bg-danger-subtle': !roomType.isActive
+                                        }"
+                                    >
+                                        {{roomType.isActive ? 'Activo' : 'Inactivo'}}
+                                    </span>
                                 </td>
                                 <td scope="row">
                                     <div class="dropdown">
@@ -73,14 +74,14 @@
 
                                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="cursor: pointer;">
                                             <li>
-                                                <a class="dropdown-item">
+                                                <a class="dropdown-item" (click)="view(roomType)">
                                                     <i class="bi bi-eye me-2"></i>
                                                     Ver
                                                 </a>
                                             </li>
 
                                             <li>
-                                                <a class="dropdown-item">
+                                                <a class="dropdown-item disabled" (click)="edit(roomType)" aria-disabled="true" >
                                                     <i class="bi bi-pencil me-2"></i>
                                                     Editar
                                                 </a>
@@ -89,7 +90,7 @@
                                             @if (!roomType.isActive) 
                                             {
                                                 <li>
-                                                    <a class="dropdown-item">
+                                                    <a class="dropdown-item" (click)="activate(roomType.id)">
                                                         <i class="bi bi-power me-2"></i>
                                                         Activar
                                                     </a>
@@ -99,7 +100,7 @@
                                             @if (roomType.isActive) 
                                             {
                                                  <li>
-                                                    <a class="dropdown-item">
+                                                    <a class="dropdown-item" (click)="deactivate(roomType.id)">
                                                         <i class="bi bi-power me-2"></i>
                                                         Desactivar
                                                     </a>
@@ -123,4 +124,51 @@
             </app-pagination-component>
         }
     }
-</div>
+<!-- </div> -->
+
+
+<app-modal-component
+    title="{{(selectedRoomType() == null || selectedRoomType() == undefined) 
+        ? 'Alta de Hotel' 
+        : (`(${selectedRoomType()?.code}) ${selectedRoomType()?.name}`).toUpperCase()
+    }}"
+    size="lg"
+    (closed)="onModalClosed()"
+>
+    <app-room-type-form-page
+        modal-body
+        [editing]="isEdition()"
+        [viewing]="isView()"
+        [currentRoomType]="selectedRoomType()"
+        [isModalOpen]="isModalOpen()"
+
+        (saved)="onSaved($event)"
+        (close)="creationModal().close()"
+        (isFormValid)="checkFormValid($event)"
+        (loading)="isFormLoading.set($event)"
+    />
+    
+    @if (!isView()) {
+        <div class="modal-footer" modal-footer>
+            <button 
+                type="button" 
+                class="btn btn-secondary" 
+                (click)="creationModal().close()"
+                [disabled]="isFormLoading()"
+            >
+                Cancelar
+            </button>
+            
+            <button 
+                type="submit" 
+                form="hotelCreationForm" 
+                class="btn btn-primary"
+                [disabled]="!isFormValid || isFormLoading()"
+            >
+                @if (isFormLoading()){ <div class="spinner-border spinner-border-sm text-light" role="status"></div> }
+                Confirmar
+            </button>
+        </div>
+    }
+</app-modal-component>
+

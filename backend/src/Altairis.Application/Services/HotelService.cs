@@ -65,7 +65,33 @@ namespace Altairis.Application.Services
             {
                 return new ListApiResponse<HotelDTO>()
                 {
-                    StatusCode = HttpStatusCode.OK,
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Success = false,
+                    Message = ex.Message,
+                };
+            }
+        }
+
+        public async Task<ListApiResponse<HotelDTO>> GetAllActiveAsync()
+        {
+            try
+            {
+                var hotels = await _repository.GetByConditionAsync(x => x.IsActive == true);
+
+                return (hotels is not null && hotels.Any())
+                    ? new ListApiResponse<HotelDTO> { Items = hotels?.Select(h => h.ToDto())?.ToList()! }
+                    : new ListApiResponse<HotelDTO>
+                    {
+                        Success = false,
+                        StatusCode = HttpStatusCode.NotFound,
+                        Message = "No se hallaron registros.",
+                    };
+            }
+            catch (Exception ex)
+            {
+                return new ListApiResponse<HotelDTO>()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
                     Success = false,
                     Message = ex.Message,
                 };

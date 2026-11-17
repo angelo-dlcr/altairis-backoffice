@@ -12,5 +12,8 @@ namespace Altairis.Application.Interfaces.Services
         Task<SingleApiResponse<RoomTypeDTO>> GetByIdAsync(int id);
         Task<ListApiResponse<RoomTypeDTO>> GetAllAsync();
         Task<PagedListApiResponse<RoomTypeDTO>> GetAllPagedAsync(PaginationFilters pagination, RoomTypeFiltersDTO? filter = null);
+
+        Task<SingleApiResponse<bool>> AddAsync(RoomTypeDTO dto);
+        Task<SingleApiResponse<bool>> ChangeStatusAsync(int id, bool activate);
     }
 }

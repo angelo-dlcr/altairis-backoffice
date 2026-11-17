@@ -10,7 +10,7 @@ import {
   UpdateRoomTypeRequest,
   RoomTypeFilters
 } from '../models/room-type.model';
-import { ListApiResponse, PagedListApiResponse } from '../../../shared/models/api-response.model';
+import { ListApiResponse, PagedListApiResponse, SingleApiResponse } from '../../../shared/models/api-response.model';
 import { PaginationParams } from '../../../shared/models/pagination-params-model';
 
 @Injectable({
@@ -46,10 +46,17 @@ export class RoomTypeApiService {
     );
   }
 
-  create(request: CreateRoomTypeRequest): Observable<RoomType> {
-    return this.http.post<RoomType>(
-      this.apiUrl,
+  create(request: CreateRoomTypeRequest): Observable<SingleApiResponse<boolean>> {
+    return this.http.post<SingleApiResponse<boolean>>(
+      `${this.apiUrl}/Create`,
       request
+    );
+  }
+  
+  changeStatus(id: number, activate: boolean): Observable<SingleApiResponse<boolean>> {
+    return this.http.put<SingleApiResponse<boolean>>(
+      `${this.apiUrl}/ChangeStatus/${id}`,
+      activate
     );
   }
 
