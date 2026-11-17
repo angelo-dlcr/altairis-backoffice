@@ -1,0 +1,64 @@
+<select
+    class="form-control form-select d-none"
+    [value]="control()?.value ?? ''"
+    [disabled]="viewing()"
+    tabindex="-1"
+    aria-hidden="true"
+>
+    @for (option of options(); track option) {
+        <option [value]="option">
+            {{ option }}
+        </option>
+    }
+</select>
+
+<div
+    class="dropdown form-control p-0 col-md-6"
+    [class.is-invalid]="requiredValidation() && control()?.invalid && control()?.touched"
+    [class.is-valid]="requiredValidation() && control()?.valid && control()?.touched"
+    [class.disabled]="viewing()"
+>
+    <button
+        class="btn form-control border-0 w-100 position-relative dropdown-toggle text-end"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        (blur)="requiredValidation() && control()?.markAsTouched()"
+        [disabled]="viewing()"
+        [style.color]="requiredValidation() && control().touched && 'transparent'"
+        [class.bg-secondary-subtle]="viewing()"
+        [attr.aria-invalid]="requiredValidation() && control()?.invalid && control()?.touched"
+    >
+        <span
+            class="fw-normal ps-xl-2 text-black w-100 text-start position-absolute end-0"
+        >
+            {{ control()?.value ? getOptionLabel(control()?.value) : placeholder() }}
+        </span>
+    </button>
+
+    <ul
+        class="dropdown-menu w-100"
+        style="max-height: 200px; overflow-y: auto;"
+    >
+        @for (option of options(); track option) {
+            <li>
+                <button
+                    class="dropdown-item"
+                    type="button"
+                    [class.active]="control()?.value === option"
+                    [attr.aria-label]="option"
+                    [attr.aria-selected]="control()?.value === option"
+                    (click)="selectOption(option)"
+                >
+                    {{ option }}
+                </button>
+            </li>
+        }
+    </ul>
+</div>
+
+@if (requiredValidation() && control()?.invalid && control()?.touched) {
+    <div class="invalid-feedback d-block">
+        Campo requerido
+    </div>
+}

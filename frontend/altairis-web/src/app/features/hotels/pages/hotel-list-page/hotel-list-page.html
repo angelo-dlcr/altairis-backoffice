@@ -57,18 +57,15 @@
                                 <td scope="row">{{hotel.country}}</td>
                                 <td scope="row">{{hotel.city}}</td>
                                 <td scope="row">
-                                    @switch (hotel.isActive) {
-                                        @case (true) {
-                                            <span class="badge rounded-pill text-success bg-success-subtle badge">
-                                                Activo
-                                            </span>
-                                        }
-                                        @case (false) {
-                                            <span class="badge rounded-pill text-danger bg-danger-subtle badge">
-                                                Inactivo
-                                            </span>
-                                        }
-                                    }
+                                    <span 
+                                        class="badge rounded-pill badge"
+                                        [class]="{
+                                            'text-success': hotel.isActive, 'bg-success-subtle': hotel.isActive,
+                                            'text-danger': !hotel.isActive, 'bg-danger-subtle': !hotel.isActive
+                                        }"
+                                    >
+                                        {{hotel.isActive ? 'Activo' : 'Inactivo'}}
+                                    </span>
                                 </td>
                                 <td scope="row">
                                     <div class="dropdown">
@@ -77,19 +74,19 @@
                                         </a>
 
                                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="cursor: pointer;">
-                                            <li>
+                                            <li class="d-none">
                                                 <a class="dropdown-item" (click)="view(hotel)">
                                                     <i class="bi bi-eye me-2"></i>
                                                     Ver
                                                 </a>
                                             </li>
 
-                                            <!-- <li>
-                                                <a class="dropdown-item">
+                                            <li>
+                                                <a class="dropdown-item disabled" aria-disabled="true">
                                                     <i class="bi bi-house-gear me-2"></i>
                                                     Ver habitaciones
                                                 </a>
-                                            </li> -->
+                                            </li>
 
                                             <li>
                                                 <a class="dropdown-item disabled" (click)="edit(hotel)" aria-disabled="true" >
@@ -110,7 +107,7 @@
 
                                             @if (hotel.isActive) 
                                             {
-                                                 <li>
+                                                <li>
                                                     <a class="dropdown-item" (click)="deactivate(hotel.id)" >
                                                         <i class="bi bi-power me-2"></i>
                                                         Desactivar

@@ -58,23 +58,21 @@
                                 <td scope="row">{{reservation.roomsCount}}</td>
                                 <td scope="row">{{reservation.roomType?.code}}</td>
                                 <td scope="row">
-                                    @switch (reservation.status) {
-                                        @case ('Pending') {
-                                            <span class="badge rounded-pill text-secondary bg-secondary-subtle badge">
-                                                {{ statusLabels[reservation.status] }}
-                                            </span>
-                                        }
-                                        @case ('Confirmed') {
-                                            <span class="badge rounded-pill text-success bg-success-subtle badge">
-                                                {{ statusLabels[reservation.status] }}
-                                            </span>
-                                        }
-                                        @case ('Cancelled') {
-                                            <span class="badge rounded-pill text-danger bg-danger-subtle badge">
-                                                {{ statusLabels[reservation.status] }}
-                                            </span>
-                                        }
-                                    }
+                                    <span 
+                                        class="badge rounded-pill badge"
+                                        [class]="{
+                                            'text-secondary': reservation.status == 'Pending', 
+                                            'bg-secondary-subtle': reservation.status == 'Pending',
+
+                                            'text-success': reservation.status == 'Confirmed', 
+                                            'bg-success-subtle': reservation.status == 'Confirmed',
+
+                                            'text-danger': reservation.status == 'Cancelled', 
+                                            'bg-danger-subtle': reservation.status == 'Cancelled',
+                                        }"
+                                    >
+                                        {{statusLabels[reservation.status]}}
+                                    </span>
                                 </td>
                                 <td scope="row">
                                     <div class="dropdown">

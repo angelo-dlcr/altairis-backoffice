@@ -1,5 +1,5 @@
 import { Component, output, signal } from '@angular/core';
-import { RESERVATION_STATUSES, ReservationFilters, ReservationStatus, ReservationStatusLabel } from '../../models/reservation.model';
+import { RESERVATION_STATUSES, ReservationFilters, ReservationStatusLabel } from '../../models/reservation.model';
 import { FormsModule } from '@angular/forms';
 
 @Component({

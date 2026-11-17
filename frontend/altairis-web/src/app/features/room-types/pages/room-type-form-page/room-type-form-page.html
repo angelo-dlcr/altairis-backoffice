@@ -1,1 +1,134 @@
-<p>room-type-form-page works!</p>
+<form
+    id="hotelCreationForm"
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    class="needs-validation g-3"
+>
+    <div class="mb-3 w-100">
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <label 
+                    for="hotelId" 
+                    class="form-label"
+                > 
+                    Hotel 
+                    <span class="text-danger">*</span>
+                </label>
+                <select
+                    class="form-control form-select"
+                    id="hotelId"
+                    formControlName="hotelId"
+                    required 
+                    [class.is-invalid]="form.controls.hotelId?.invalid && form.controls.hotelId?.touched"
+                    [class.is-valid]="form.controls.hotelId?.valid && form.controls.hotelId?.touched"
+                >
+                @for (hotel of hotels()?.items; track hotel.id) {
+                    <option value={{hotel.id}}>({{ hotel.code }}) {{ hotel.name }}</option>
+                }
+                </select>
+                <div class="invalid-feedback">Campo requerido</div>
+            </div>
+            <div class="col-md-6">
+                <label 
+                    for="code" 
+                    class="form-label"
+                > 
+                    Código 
+                    <span class="text-danger">*</span>
+                </label>
+
+                <app-dropdown-select-component
+                    [requiredValidation]="true"
+                    [control]="form.controls.code"
+                    [options]="roomTypeCodes.map(code => `${code} (${roomTypeCodeLabels[code]})`)"
+                    [viewing]="viewing()"
+                    placeholder="Seleccione un tipo de habitación"
+                />
+            </div>
+        </div>
+
+        
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <label 
+                    for="name" 
+                    class="form-label"
+                > 
+                    Nombre 
+                    <span class="text-danger">*</span>
+                </label>
+                <input
+                    id="name"
+                    formControlName="name"
+                    type="text" 
+                    class="form-control" 
+                    required 
+                    [class.is-invalid]="form.controls.name?.invalid && form.controls.name?.touched"
+                    [class.is-valid]="form.controls.name?.valid && form.controls.name?.touched"
+                >
+                <div class="invalid-feedback">Campo requerido</div>
+            </div>
+            <div class="col-md-6">
+                <label 
+                    for="description" 
+                    class="form-label"
+                > 
+                    Descripción 
+                    <span class="text-secondary">(Opcional)</span>
+                </label>
+                <input
+                    id="description"
+                    formControlName="description"
+                    type="text" 
+                    class="form-control" 
+                    required 
+                    [class.is-valid]="form.controls.description?.valid && form.controls.description?.touched"
+                >
+                <div class="invalid-feedback">Campo requerido</div>
+            </div>
+        </div>
+
+        <div class="row mt-3 d-flex align-items-end">
+            <div class="col-md-6">
+                <label 
+                    for="maxOccupancy" 
+                    class="form-label"
+                > 
+                    Capacidad máxima 
+                    <span class="text-danger">*</span>
+                </label>
+                <input
+                    id="maxOccupancy"
+                    formControlName="maxOccupancy"
+                    type="number" 
+                    class="form-control"
+                    min="1"
+                    (keydown)="validateNumber($event)"
+                    [class.is-invalid]="form.controls.maxOccupancy?.invalid && form.controls.maxOccupancy?.touched"
+                    [class.is-valid]="form.controls.maxOccupancy?.valid && form.controls.maxOccupancy?.touched"
+                >
+            </div>
+            
+            <div class="col-md-3">
+                <div class="form-check form-switch ms-3">
+                    <input
+                        id="isActive"
+                        formControlName="isActive"
+                        type="checkbox" 
+                        class="form-check-input mb-2" 
+                        style="transform: scale(1.5);"
+                        role="button"
+                        checked="form.value.get('isActive')"
+                    >
+                    <label 
+                        for="isActive" 
+                        class="form-check-label ms-3"
+                    > Activar
+                    </label>
+                </div>
+            </div>
+            
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+</form>

@@ -31,9 +31,9 @@ namespace Altairis.Api.Controllers
                 : BadRequest(response);
         }
 
+
         [HttpGet(nameof(GetAll))]
-        public async Task<IActionResult> GetAll() 
-            => Ok(await _service.GetAllAsync());
+        public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
 
 
         [HttpGet(nameof(GetAllPaged))]
@@ -41,6 +41,10 @@ namespace Altairis.Api.Controllers
             [FromQuery] PaginationFilters pagination, 
             [FromQuery] HotelFiltersDTO? filter = null) 
         => Ok(await _service.GetAllPagedAsync(pagination, filter));
+
+
+        [HttpGet(nameof(GetAllActive))]
+        public async Task<IActionResult> GetAllActive() => Ok(await _service.GetAllActiveAsync());
 
 
         [HttpPost(nameof(Create))]
@@ -53,6 +57,7 @@ namespace Altairis.Api.Controllers
                 : BadRequest(response);
         }
 
+
         [HttpPut(nameof(Update))]
         public async Task<IActionResult> Update([FromBody] HotelDTO hotel)
         {
@@ -62,6 +67,7 @@ namespace Altairis.Api.Controllers
                 ? Ok(response)
                 : BadRequest(response);
         }
+
 
         [HttpPut("ChangeStatus/{id:int}")]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] bool activate)

@@ -3,7 +3,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { ReservationApiService } from '../../services/reservation-service';
 import { PaginationParams } from '../../../../shared/models/pagination-params-model';
 import { ReservationsFiltersComponent } from '../../components/reservations-filters-component/reservations-filters-component';
-import { RESERVATION_STATUSES, ReservationFilters, ReservationStatusLabel } from '../../models/reservation.model';
+import { ReservationFilters, ReservationStatusLabel } from '../../models/reservation.model';
 import { PaginationComponent } from '../../../../shared/components/pagination-component/pagination-component';
 import { DatePipe } from '@angular/common';
 

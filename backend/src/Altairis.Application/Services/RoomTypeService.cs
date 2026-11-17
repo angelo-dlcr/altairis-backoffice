@@ -149,5 +149,84 @@ namespace Altairis.Application.Services
 
             return roomTypes;
         }
+
+        public async Task<SingleApiResponse<bool>> AddAsync(RoomTypeDTO dto)
+        {
+            try
+            {
+                var roomType = dto.ToEntityCreate();
+
+                var success = await _repository.AddAsync(roomType);
+
+                return success
+                    ? new SingleApiResponse<bool>
+                    {
+                        Data = true,
+                        StatusCode = HttpStatusCode.OK,
+                        Message = "Registro creado exitosamente."
+                    }
+                    : new SingleApiResponse<bool>
+                    {
+                        Success = false,
+                        Message = "No se pudo guardar el registro",
+                        StatusCode = HttpStatusCode.BadRequest
+                    };
+            }
+            catch (Exception ex)
+            {
+                return new SingleApiResponse<bool>
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
+        }
+
+        public async Task<SingleApiResponse<bool>> ChangeStatusAsync(int id, bool activate)
+        {
+            try
+            {
+                var roomType = await _repository.GetByIdAsync(id);
+
+                if (roomType is not null)
+                {
+                    roomType?.IsActive = activate;
+                    var success = _repository.Update(roomType!);
+
+                    return success
+                        ? new SingleApiResponse<bool>
+                        {
+                            Data = true,
+                            StatusCode = HttpStatusCode.OK,
+                            Message = "Registro actualizado exitosamente."
+                        }
+                        : new SingleApiResponse<bool>
+                        {
+                            Success = false,
+                            Message = "No se pudo guardar el registro",
+                            StatusCode = HttpStatusCode.BadRequest
+                        };
+                }
+                else
+                {
+                    return new SingleApiResponse<bool>
+                    {
+                        Success = false,
+                        Message = "El registro indicado no existe.",
+                        StatusCode = HttpStatusCode.NotFound
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new SingleApiResponse<bool>
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message
+                };
+            }
+        }
     }
 }

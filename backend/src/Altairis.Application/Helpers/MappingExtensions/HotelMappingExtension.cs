@@ -41,7 +41,6 @@ namespace Altairis.Application.Helpers.MappingExtensions
             Country = dto.Country,
             City = dto.City,
             Address = dto.Address,
-            IsActive = dto.IsActive,
         };
     }
 }

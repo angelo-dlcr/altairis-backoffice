@@ -30,7 +30,11 @@ export class HotelApiService {
   private readonly apiUrl = `${environment.apiUrl}/Hotel`;
 
   getAll(): Observable<ListApiResponse<Hotel>> {
-    return this.http.get<ListApiResponse<Hotel>>(this.apiUrl);
+    return this.http.get<ListApiResponse<Hotel>>(`${this.apiUrl}/GetAll`);
+  }
+  
+  getAllActive(): Observable<ListApiResponse<Hotel>> {
+    return this.http.get<ListApiResponse<Hotel>>(`${this.apiUrl}/GetAllActive`);
   }
 
   getById(id: number): Observable<Hotel> {
