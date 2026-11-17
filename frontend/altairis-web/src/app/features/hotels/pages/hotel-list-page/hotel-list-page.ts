@@ -12,13 +12,15 @@ import { ModalComponent } from '../../../../shared/components/modal-component/mo
 import { HotelFormPageComponent } from '../hotel-form-page/hotel-form-page';
 import { Dropdown } from 'bootstrap';
 import { ToastService } from '../../../../shared/components/toast-component/service/toast-service';
+import { HotelDetailPageComponent } from '../hotel-detail-page/hotel-detail-page';
 
 @Component({
   imports: [
     HotelFiltersComponent,
     PaginationComponent,
     ModalComponent,
-    HotelFormPageComponent
+    HotelFormPageComponent,
+    HotelDetailPageComponent
 ],
   selector: 'app-hotel-list-page',
   styleUrl: './hotel-list-page.scss',
@@ -35,9 +37,11 @@ export class HotelListPageComponent {
   isView = signal<boolean>(false);
   selectedHotel = signal<Hotel | undefined | null>(undefined);
 
-  isFormLoading = signal<boolean>(false)
+  isFormLoading = signal<boolean>(false);
   
-  creationModal = viewChild.required(ModalComponent);
+  hotelFormModal = viewChild.required<ModalComponent>('formModal');
+  roomTypesModal = viewChild.required<ModalComponent>('roomTypesModal');
+
   isFormValid: boolean = false;
   
 
@@ -45,14 +49,14 @@ export class HotelListPageComponent {
     this.isEdition.set(true);
     this.isView.set(false);
     
-    this.openModal(hotel);
+    this.openHotelFormModal(hotel);
   }
   
   view(hotel: Hotel) {
     this.isView.set(true);
     this.isEdition.set(false);
 
-    this.openModal(hotel);
+    this.openHotelFormModal(hotel);
   }
 
   activate = (id: number) => this.processStatusChange(id, true);
@@ -86,17 +90,22 @@ export class HotelListPageComponent {
   
   checkFormValid = (isValid: boolean = false) => this.isFormValid = isValid;
   
-  openModal(hotel: Hotel | undefined | null = undefined): void {
+  openHotelRoomTypesModal(hotel: Hotel): void {
+    this.selectedHotel.set(hotel);
+    this.roomTypesModal().open();
+  } 
+  
+  openHotelFormModal(hotel: Hotel | undefined | null = undefined): void {
     if (this.isFormLoading()) return;
 
     if (hotel != undefined && hotel != null) this.selectedHotel.set(hotel);
 
-    this.creationModal().open();
+    this.hotelFormModal().open();
   } 
 
   onHotelSaved(isSaved: boolean): void {
     if (isSaved) {
-      this.creationModal().close();
+      this.hotelFormModal().close();
     }
   }
   

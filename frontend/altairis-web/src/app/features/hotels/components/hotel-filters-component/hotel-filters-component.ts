@@ -1,9 +1,10 @@
 import { Component, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HotelFilters } from '../../models/hotel.model';
+import { DropdownSelectComponent, DropdownSelectOption } from '../../../../shared/components/dropdown-select-component/dropdown-select-component';
 
 @Component({
-  imports: [FormsModule],
+  imports: [FormsModule, DropdownSelectComponent],
   selector: 'app-hotel-filters-component',
   styleUrl: './hotel-filters-component.scss',
   templateUrl: './hotel-filters-component.html',
@@ -21,6 +22,12 @@ export class HotelFiltersComponent {
     endDate: null,
   });
 
+  statusOptions: DropdownSelectOption<boolean | null>[] = [
+    { value: null, label: 'Todos' },
+    { value: true, label: 'Activo' },
+    { value: false, label: 'Inactivo' },
+  ];
+  
   updateFilterField(field: keyof HotelFilters, value: any) {
     this.filters.update(currentFilters => ({
       ...currentFilters,

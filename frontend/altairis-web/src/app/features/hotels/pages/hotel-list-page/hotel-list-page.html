@@ -14,7 +14,7 @@
         <div class="row mb-5 position-relative" style="height: 25px;">
             <a 
                 class="btn btn-outline-primary fw-semibold rounded w-auto d-flex align-items-center gap-2 pt-2 pb-2 position-absolute end-0 me-4"
-                (click)="openModal()"
+                (click)="openHotelFormModal()"
             >
                 <i class="bi bi-plus-lg"></i>
                 <span>Crear hotel</span>
@@ -82,7 +82,7 @@
                                             </li>
 
                                             <li>
-                                                <a class="dropdown-item disabled" aria-disabled="true">
+                                                <a class="dropdown-item" (click)="openHotelRoomTypesModal(hotel)">
                                                     <i class="bi bi-house-gear me-2"></i>
                                                     Ver habitaciones
                                                 </a>
@@ -135,6 +135,7 @@
 <!-- </div> -->
 
 <app-modal-component
+    #formModal
     title="{{(selectedHotel() == null || selectedHotel() == undefined) 
         ? 'Alta de Hotel' 
         : (`(${selectedHotel()?.code}) ${selectedHotel()?.name}`).toUpperCase()
@@ -149,7 +150,7 @@
         [currentHotel]="selectedHotel()"
 
         (saved)="onHotelSaved($event)"
-        (close)="creationModal().close()"
+        (close)="hotelFormModal().close()"
         (isFormValid)="checkFormValid($event)"
         (loading)="isFormLoading.set($event)"
     />
@@ -159,7 +160,7 @@
             <button 
                 type="button" 
                 class="btn btn-secondary" 
-                (click)="creationModal().close()"
+                (click)="hotelFormModal().close()"
                 [disabled]="isFormLoading()"
             >
                 Cancelar
@@ -179,39 +180,13 @@
 </app-modal-component>
 
 
-<!-- 
 <app-modal-component
-    title="Hotel"
-    size="lg"
-    (closed)="onModalClosed()"
+    #roomTypesModal
+    title="{{ (`(${selectedHotel()?.code}) ${selectedHotel()?.name}`).toUpperCase() }}"
+    size="xl"
 >
-    <app-hotel-form-page 
+    <app-hotel-detail-page 
         modal-body
-        [editing]="isEdition"
-        (saved)="onHotelSaved($event)"
-        (close)="creationModal().close()"
-        (isFormValid)="checkFormValid($event)"
-        (loading)="isFormLoading.set($event)"
+        [currentHotelId]="selectedHotel()?.id!"
     />
-    
-    <div class="modal-footer" modal-footer>
-        <button 
-            type="button" 
-            class="btn btn-secondary" 
-            (click)="creationModal().close()"
-            [disabled]="isFormLoading()"
-        >
-            Cancelar
-        </button>
-        
-        <button 
-            type="submit" 
-            form="hotelCreationForm" 
-            class="btn btn-primary"
-            [disabled]="!isFormValid || isFormLoading()"
-        >
-            @if (isFormLoading()){ <div class="spinner-border spinner-border-sm text-light" role="status"></div> }
-            Confirmar
-        </button>
-    </div>
-</app-modal-component> -->
+</app-modal-component>

@@ -40,6 +40,14 @@ export class RoomTypeApiService {
     );
   }
 
+  getAllByHotelId(id: number) : Observable<ListApiResponse<RoomType>> 
+  {
+    return this.http.get<ListApiResponse<RoomType>>(
+      `${this.apiUrl}/GetAllByHotelId`,
+      {params: { hotelId: id} }
+    );
+  }
+
   getById(id: number): Observable<RoomType> {
     return this.http.get<RoomType>(
       `${this.apiUrl}/${id}`
