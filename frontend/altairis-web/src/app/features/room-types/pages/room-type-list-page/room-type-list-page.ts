@@ -24,7 +24,7 @@ export class RoomTypeListPageComponent {
   filters = signal<RoomTypeFilters | undefined>(undefined);
   isEdition = signal<boolean>(false);
   isView = signal<boolean>(false);
-  selectedRoomType = signal<RoomType | undefined | null>(undefined);
+  selectedRoomType = signal<RoomType | null>(null);
 
   isModalOpen = signal<boolean>(false);
 
@@ -79,11 +79,12 @@ export class RoomTypeListPageComponent {
 
   checkFormValid = (isValid: boolean = false) => this.isFormValid = isValid;
   
-  openModal(roomType: RoomType | undefined | null = undefined): void {
+  openModal(roomType: RoomType | null = null): void {
     if (this.isFormLoading()) return;
-    if (roomType != undefined && roomType != null) this.selectedRoomType.set(roomType);
     
+    this.selectedRoomType.set(roomType);
     this.isModalOpen.set(true);
+
     this.creationModal().open();
   } 
 
@@ -95,10 +96,11 @@ export class RoomTypeListPageComponent {
   
   onModalClosed(): void {
     this.isModalOpen.set(false);
-    this.roomTypeResource.reload();
     this.isEdition.set(false);
     this.isView.set(false);
     this.selectedRoomType.set(null);
+
+    this.roomTypeResource.reload();
   }
 
   filterHotels(filters: RoomTypeFilters) {

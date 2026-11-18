@@ -14,19 +14,14 @@
                     Hotel 
                     <span class="text-danger">*</span>
                 </label>
-                <select
-                    class="form-control form-select"
-                    id="hotelId"
-                    formControlName="hotelId"
-                    required 
-                    [class.is-invalid]="form.controls.hotelId?.invalid && form.controls.hotelId?.touched"
-                    [class.is-valid]="form.controls.hotelId?.valid && form.controls.hotelId?.touched"
-                >
-                @for (hotel of hotels()?.items; track hotel.id) {
-                    <option value={{hotel.id}}>({{ hotel.code }}) {{ hotel.name }}</option>
-                }
-                </select>
-                <div class="invalid-feedback">Campo requerido</div>
+                <app-dropdown-select-component
+                    [requiredValidation]="true"
+                    [control]="form.controls.hotelId"
+                    [options]="hotelOptions()"
+                    [viewing]="viewing()"
+                    [modalOpen]="isModalOpen()"
+                    placeholder="Seleccione un hotel"
+                />
             </div>
             <div class="col-md-6">
                 <label 
@@ -36,12 +31,12 @@
                     Código 
                     <span class="text-danger">*</span>
                 </label>
-
                 <app-dropdown-select-component
                     [requiredValidation]="true"
                     [control]="form.controls.code"
-                    [options]="roomTypeCodes.map(code => `${code} (${roomTypeCodeLabels[code]})`)"
+                    [options]="roomTypeCodeOptions()"
                     [viewing]="viewing()"
+                    [modalOpen]="isModalOpen()"
                     placeholder="Seleccione un tipo de habitación"
                 />
             </div>

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, effect, inject, input, linkedSignal, output } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, input, linkedSignal, output } from '@angular/core';
 import { HotelApiService } from '../../../hotels/services/hotel-service';
 import { ToastService } from '../../../../shared/components/toast-component/service/toast-service';
 import { RoomTypeApiService } from '../../services/room-type-service';
@@ -9,7 +9,7 @@ import { HttpStatusCode } from '@angular/common/http';
 import { Hotel } from '../../../hotels/models/hotel.model';
 import { of } from 'rxjs';
 import { ListApiResponse } from '../../../../shared/models/api-response.model';
-import { DropdownSelectComponent } from '../../../../shared/components/dropdown-select-component/dropdown-select-component';
+import { DropdownSelectComponent, DropdownSelectOption } from '../../../../shared/components/dropdown-select-component/dropdown-select-component';
 
 @Component({
   imports: [
@@ -37,7 +37,7 @@ export class RoomTypeFormPageComponent {
 
   editing = input.required<boolean>();
   viewing = input.required<boolean>();
-  currentRoomType = input.required<RoomType | undefined | null>()
+  currentRoomType = input.required<RoomType | null>()
   
   loading = output<boolean>();
 
@@ -107,41 +107,24 @@ export class RoomTypeFormPageComponent {
   constructor() 
   {
     effect(() => {
-      // this.hotelResource.reload();
-      
       const isOpen = this.isModalOpen();
+
+      if (!isOpen) {
+        this.resetForm();
+        return;
+      }
+
       const roomType = this.currentRoomType();
       const isEditing = this.editing();
       const isViewing = this.viewing();
 
-      this.form.enable({ emitEvent: false });
-
-      if (roomType) {
-        this.form.patchValue({
-          hotelId: roomType.hotelId,
-          code: roomType.code,
-          name: roomType.name,
-          description: roomType.description,
-          maxOccupancy: roomType.maxOccupancy,
-          isActive: roomType.isActive,
-        }, 
-        { 
-          emitEvent: false
-        });
-      } else {
-        this.resetForm();
-      }
+      this.initializeForm(roomType);
 
       if (isViewing) {
-        this.form.disable();
+        this.form.disable({ emitEvent: false});
       } 
-      else {
-        if (isEditing) {
-          this.form.controls.isActive.enable();
-        } 
-        else {
-          this.form.controls.isActive.disable();
-        }
+      else if (!isEditing) {
+          this.form.controls.isActive.disable({ emitEvent: false });
       }
 
       this.isFormValid.emit(this.form.valid);
@@ -160,6 +143,27 @@ export class RoomTypeFormPageComponent {
         this.isFormValid.emit(this.form.valid);
       });
   }
+
+  private initializeForm(roomType: RoomType | null): void {
+    this.form.enable({ emitEvent: false });
+
+    if (!roomType) {
+        this.resetForm();
+        return;
+    }
+
+    this.form.reset({
+        hotelId: roomType.hotelId,
+        code: roomType.code,
+        name: roomType.name,
+        description: roomType.description,
+        maxOccupancy: roomType.maxOccupancy,
+        isActive: roomType.isActive
+    }, {
+        emitEvent: false
+    });
+  }
+
       
   get codeControl(): FormControl<string> {
     return this.form.controls.code;
@@ -179,7 +183,20 @@ export class RoomTypeFormPageComponent {
 
   hotels = this.hotelResource.value;
   error = this.hotelResource.error;
-
+  
+  hotelOptions = computed<DropdownSelectOption<number>[]>(() =>
+    this.hotels()?.items?.map(hotel => ({
+      value: hotel.id,
+      label: `(${hotel.code}) ${hotel.name}`
+    })) ?? []
+  );
+  
+  roomTypeCodeOptions = computed<DropdownSelectOption<string>[]>(() =>
+    this.roomTypeCodes?.map(code => ({
+      value: code,
+      label: this.roomTypeCodeLabels[code]
+    })) ?? []
+  );
 
   validateNumber(event: KeyboardEvent) {
     const teclasProhibidas = ['e', 'E', '+', '-', '.', ','];
@@ -189,7 +206,6 @@ export class RoomTypeFormPageComponent {
     }
   }
 
-  
   onSubmit(): void {
     if (this.editing()) {
       this.processUpdate();
@@ -200,23 +216,21 @@ export class RoomTypeFormPageComponent {
   }
 
   onClose(): void {
-    this.form.markAsUntouched();
-    this.form.clearValidators();
     this.resetForm();
     this.close.emit();
   }
 
   resetForm = () => {
-      this.form.reset({
-          hotelId: 0,
-          code: '',
-          name: '',
-          description: '',
-          maxOccupancy: 0,
-          isActive: true
-      });
+    this.form.reset({
+      hotelId: 0,
+      code: '',
+      name: '',
+      description: '',
+      maxOccupancy: 0,
+      isActive: true
+    });
   };
-  
+
   processCreate(): void {
     this.loading.emit(true);
 

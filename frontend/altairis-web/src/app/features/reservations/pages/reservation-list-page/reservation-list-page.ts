@@ -24,21 +24,6 @@ export class ReservationListPageComponent {
   filters = signal<ReservationFilters | undefined>(undefined);
 
   readonly statusLabels = ReservationStatusLabel;
-
-  hotelResource = rxResource({
-    params: () =>({
-      pagination: this.pagination(),
-      filters: this.filters()
-    }),
-    stream: (ctx) => this.apiService.getAllPaged(
-      ctx.params.pagination, 
-      ctx.params.filters
-    )
-  });
-
-  data = this.hotelResource.value;        
-  isLoading = this.hotelResource.isLoading;
-  error = this.hotelResource.error;
   
   onPageChange(page: number): void {
     this.pagination.update(current => ({
@@ -54,4 +39,19 @@ export class ReservationListPageComponent {
   removeFilters() {
     this.filters.set(undefined); 
   }
+
+  reservationResource = rxResource({
+    params: () =>({
+      pagination: this.pagination(),
+      filters: this.filters()
+    }),
+    stream: (ctx) => this.apiService.getAllPaged(
+      ctx.params.pagination, 
+      ctx.params.filters
+    )
+  });
+
+  data = this.reservationResource.value;        
+  isLoading = this.reservationResource.isLoading;
+  error = this.reservationResource.error;
 }

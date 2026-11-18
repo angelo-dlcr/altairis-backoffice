@@ -50,6 +50,35 @@ namespace Altairis.Application.Services
             }
         }
 
+        public async Task<ListApiResponse<RoomTypeDTO>> GetAllByHotelIdAsync(int hotelId)
+        {
+            try
+            {
+                var roomTypes = await _repository.GetByConditionOrderedByAsync(x => x.HotelId == hotelId, x => x.Code, ignoreAutoIncludes: true);
+
+                return (roomTypes is not null && roomTypes.Any())
+                    ? new ListApiResponse<RoomTypeDTO> 
+                    { 
+                        Items = roomTypes?.Select(h => h.ToDto())?.ToList()!
+                    }
+                    : new ListApiResponse<RoomTypeDTO>
+                    {
+                        StatusCode = HttpStatusCode.NotFound,
+                        Message = "No se hallaron registros.",
+                        Success = false
+                    };
+            }
+            catch (Exception ex)
+            {
+                return new ListApiResponse<RoomTypeDTO>()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message,
+                };
+            }
+        }
+
         public async Task<ListApiResponse<RoomTypeDTO>> GetAllAsync()
         {
             try

@@ -12,29 +12,14 @@
                 placeholder=""
             />
         </div>
-        <!-- <div class="col-md-4">
-            <label for="" class="form-label fw-semibold">Código / Nombre de hotel:</label>
-            <input
-                type="text"
-                class="form-control"
-                id="hotelCodeOrName"
-                [(ngModel)]="filters().hotelCodeOrName"
-                (ngModelChange)="updateFilterField('hotelCodeOrName', $event)"
-                placeholder=""
-            />
-        </div> -->
         <div class="col-md-4">
             <label for="" class="form-label fw-semibold">Estado</label>
-            <select
-                class="form-select"
+            <app-dropdown-select-component
                 id="isActive"
-                [(ngModel)]="filters().isActive"
-                (ngModelChange)="updateFilterField('isActive', $event)"
-            >
-                <option value=null>Todos</option>
-                <option value=true>Activo</option>
-                <option value=false>Inactivo</option>
-            </select>
+                [options]="statusOptions"
+                [value]="filters().isActive"
+                (valueChange)="updateFilterField('isActive', $event)"
+            />
         </div>
     </div>
 

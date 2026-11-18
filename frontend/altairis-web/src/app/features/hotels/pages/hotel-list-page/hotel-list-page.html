@@ -1,140 +1,138 @@
 <h2>Listado de Hoteles</h2>
 
-<!-- <div class="container mt-5 mb-3 h-100"> -->
-    
-    <app-hotel-filters-component
-        (onFilter)="filterHotels($event)"
-        (onClear)="removeFilters()"
-    >
-    </app-hotel-filters-component>
-    
-    <hr>
+<app-hotel-filters-component
+    (onFilter)="filterHotels($event)"
+    (onClear)="removeFilters()"
+>
+</app-hotel-filters-component>
 
-    @if(!isLoading()) {
-        <div class="row mb-5 position-relative" style="height: 25px;">
-            <a 
-                class="btn btn-outline-primary fw-semibold rounded w-auto d-flex align-items-center gap-2 pt-2 pb-2 position-absolute end-0 me-4"
-                (click)="openModal()"
-            >
-                <i class="bi bi-plus-lg"></i>
-                <span>Crear hotel</span>
-            </a>
+<hr>
+
+@if(!isLoading()) {
+    <div class="row mb-5 position-relative" style="height: 25px;">
+        <a 
+            class="btn btn-outline-primary fw-semibold rounded w-auto d-flex align-items-center gap-2 pt-2 pb-2 position-absolute end-0 me-4"
+            (click)="openHotelFormModal()"
+        >
+            <i class="bi bi-plus-lg"></i>
+            <span>Crear hotel</span>
+        </a>
+    </div>
+}
+
+@if(isLoading()) {
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-secondary" role="status">
+            <span class="visually-hidden">Cargando registros...</span>
         </div>
+    </div>
+}
+@else {
+    @if(error()){
+        <p class="text-danger"><i class="bi bi-exclamation-circle"></i> Fallo al conectar con el servidor..</p>
     }
-
-    @if(isLoading()) {
-        <div class="d-flex justify-content-center">
-            <div class="spinner-border text-secondary" role="status">
-                <span class="visually-hidden">Cargando registros...</span>
-            </div>
-        </div>
+    @else if(data()?.totalCount! <= 0){
+        <p class="text-secondary-emphasis">No hay registos que coincidan con la búsqueda.</p>
     }
     @else {
-        @if(error()){
-            <p class="text-danger"><i class="bi bi-exclamation-circle"></i> Fallo al conectar con el servidor..</p>
-        }
-        @else if(data()?.totalCount! <= 0){
-            <p class="text-secondary-emphasis">No hay registos que coincidan con la búsqueda.</p>
-        }
-        @else {
-            <div class="table-responsive-lg">
-                <table class="table table-hover">
-                    <thead>
+        <div class="table-responsive-lg">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="text-center">
+                        <th scope="col">Codigo</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">País</th>
+                        <th scope="col">Ciudad</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (hotel of data()?.items; track hotel.id) {
                         <tr class="text-center">
-                            <th scope="col">Codigo</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">País</th>
-                            <th scope="col">Ciudad</th>
-                            <th scope="col">Estado</th>
-                            <th scope="col"></th>
+                            <td scope="row">{{hotel.code}}</td>
+                            <td scope="row">{{hotel.name}}</td>
+                            <td scope="row">{{hotel.country}}</td>
+                            <td scope="row">{{hotel.city}}</td>
+                            <td scope="row">
+                                <span 
+                                    class="badge rounded-pill badge"
+                                    [class]="{
+                                        'text-success': hotel.isActive, 'bg-success-subtle': hotel.isActive,
+                                        'text-danger': !hotel.isActive, 'bg-danger-subtle': !hotel.isActive
+                                    }"
+                                >
+                                    {{hotel.isActive ? 'Activo' : 'Inactivo'}}
+                                </span>
+                            </td>
+                            <td scope="row">
+                                <div class="dropdown">
+                                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-gear me-2"></i>
+                                    </a>
+
+                                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="cursor: pointer;">
+                                        <li>
+                                            <a class="dropdown-item" (click)="view(hotel)">
+                                                <i class="bi bi-eye me-2"></i>
+                                                Ver
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a class="dropdown-item" (click)="openHotelRoomTypesModal(hotel)">
+                                                <i class="bi bi-house-gear me-2"></i>
+                                                Ver habitaciones
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a class="dropdown-item disabled" (click)="edit(hotel)" aria-disabled="true" >
+                                                <i class="bi bi-pencil me-2"></i>
+                                                Editar
+                                            </a>
+                                        </li>
+                                        
+                                        @if (!hotel.isActive) 
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" (click)="activate(hotel.id)">
+                                                    <i class="bi bi-power me-2"></i>
+                                                    Activar
+                                                </a>
+                                            </li> 
+                                        }
+
+                                        @if (hotel.isActive) 
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" (click)="deactivate(hotel.id)" >
+                                                    <i class="bi bi-power me-2"></i>
+                                                    Desactivar
+                                                </a>
+                                            </li> 
+                                        }
+                                    </ul>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @for (hotel of data()?.items; track hotel.id) {
-                            <tr class="text-center">
-                                <td scope="row">{{hotel.code}}</td>
-                                <td scope="row">{{hotel.name}}</td>
-                                <td scope="row">{{hotel.country}}</td>
-                                <td scope="row">{{hotel.city}}</td>
-                                <td scope="row">
-                                    <span 
-                                        class="badge rounded-pill badge"
-                                        [class]="{
-                                            'text-success': hotel.isActive, 'bg-success-subtle': hotel.isActive,
-                                            'text-danger': !hotel.isActive, 'bg-danger-subtle': !hotel.isActive
-                                        }"
-                                    >
-                                        {{hotel.isActive ? 'Activo' : 'Inactivo'}}
-                                    </span>
-                                </td>
-                                <td scope="row">
-                                    <div class="dropdown">
-                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-gear me-2"></i>
-                                        </a>
-
-                                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="cursor: pointer;">
-                                            <li class="d-none">
-                                                <a class="dropdown-item" (click)="view(hotel)">
-                                                    <i class="bi bi-eye me-2"></i>
-                                                    Ver
-                                                </a>
-                                            </li>
-
-                                            <li>
-                                                <a class="dropdown-item disabled" aria-disabled="true">
-                                                    <i class="bi bi-house-gear me-2"></i>
-                                                    Ver habitaciones
-                                                </a>
-                                            </li>
-
-                                            <li>
-                                                <a class="dropdown-item disabled" (click)="edit(hotel)" aria-disabled="true" >
-                                                    <i class="bi bi-pencil me-2"></i>
-                                                    Editar
-                                                </a>
-                                            </li>
-                                            
-                                            @if (!hotel.isActive) 
-                                            {
-                                                <li>
-                                                    <a class="dropdown-item" (click)="activate(hotel.id)">
-                                                        <i class="bi bi-power me-2"></i>
-                                                        Activar
-                                                    </a>
-                                                </li> 
-                                            }
-
-                                            @if (hotel.isActive) 
-                                            {
-                                                <li>
-                                                    <a class="dropdown-item" (click)="deactivate(hotel.id)" >
-                                                        <i class="bi bi-power me-2"></i>
-                                                        Desactivar
-                                                    </a>
-                                                </li> 
-                                            }
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <app-pagination-component
-                [totalCount]="data()?.totalCount ?? 0"
-                [pageNumber]="data()?.pageNumber ?? 1"
-                [pageSize]="data()?.pageSize ?? pagination()?.pageSize ?? 10"
-                [totalPages]="data()?.totalPages ?? 0"
-                (pageChange)="onPageChange($event)"
-            >
-            </app-pagination-component>
-        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <app-pagination-component
+            [totalCount]="data()?.totalCount ?? 0"
+            [pageNumber]="data()?.pageNumber ?? 1"
+            [pageSize]="data()?.pageSize ?? pagination()?.pageSize ?? 10"
+            [totalPages]="data()?.totalPages ?? 0"
+            (pageChange)="onPageChange($event)"
+        >
+        </app-pagination-component>
     }
-<!-- </div> -->
+}
 
 <app-modal-component
+    #formModal
     title="{{(selectedHotel() == null || selectedHotel() == undefined) 
         ? 'Alta de Hotel' 
         : (`(${selectedHotel()?.code}) ${selectedHotel()?.name}`).toUpperCase()
@@ -149,7 +147,7 @@
         [currentHotel]="selectedHotel()"
 
         (saved)="onHotelSaved($event)"
-        (close)="creationModal().close()"
+        (close)="hotelFormModal().close()"
         (isFormValid)="checkFormValid($event)"
         (loading)="isFormLoading.set($event)"
     />
@@ -159,7 +157,7 @@
             <button 
                 type="button" 
                 class="btn btn-secondary" 
-                (click)="creationModal().close()"
+                (click)="hotelFormModal().close()"
                 [disabled]="isFormLoading()"
             >
                 Cancelar
@@ -179,39 +177,14 @@
 </app-modal-component>
 
 
-<!-- 
 <app-modal-component
-    title="Hotel"
-    size="lg"
+    #roomTypesModal
+    title="{{ (`(${selectedHotel()?.code}) ${selectedHotel()?.name}`).toUpperCase() }}"
+    size="xl"
     (closed)="onModalClosed()"
 >
-    <app-hotel-form-page 
+    <app-hotel-detail-page 
         modal-body
-        [editing]="isEdition"
-        (saved)="onHotelSaved($event)"
-        (close)="creationModal().close()"
-        (isFormValid)="checkFormValid($event)"
-        (loading)="isFormLoading.set($event)"
+        [currentHotelId]="selectedHotel()?.id!"
     />
-    
-    <div class="modal-footer" modal-footer>
-        <button 
-            type="button" 
-            class="btn btn-secondary" 
-            (click)="creationModal().close()"
-            [disabled]="isFormLoading()"
-        >
-            Cancelar
-        </button>
-        
-        <button 
-            type="submit" 
-            form="hotelCreationForm" 
-            class="btn btn-primary"
-            [disabled]="!isFormValid || isFormLoading()"
-        >
-            @if (isFormLoading()){ <div class="spinner-border spinner-border-sm text-light" role="status"></div> }
-            Confirmar
-        </button>
-    </div>
-</app-modal-component> -->
+</app-modal-component>

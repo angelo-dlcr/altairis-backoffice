@@ -1,5 +1,10 @@
-import { Component, input } from '@angular/core';
+import { Component, effect, ElementRef, HostListener, inject, input, output, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
+
+export interface DropdownSelectOption<T = any> {
+  value: T,
+  label: string
+}
 
 @Component({
   imports: [],
@@ -8,22 +13,89 @@ import { FormControl } from '@angular/forms';
   templateUrl: './dropdown-select-component.html',
 })
 export class DropdownSelectComponent {
-    control = input.required<FormControl>();
-    options = input.required<readonly string[]>();
-    requiredValidation = input.required<boolean>();
+  private eRef = inject(ElementRef);
 
-    viewing = input<boolean>(false);
-    placeholder = input<string>('Seleccione una opción');
+  control = input<FormControl | undefined>(undefined);
+  
+  value = input<any>(null);
+  valueChange = output<any>();
+  
+  options = input.required<readonly DropdownSelectOption[]>();
+  requiredValidation = input<boolean>(false);
+  
+  viewing = input<boolean>(false);
+  placeholder = input<string>('Seleccione una opción');
+  
+  modalOpen = input<boolean>(false);
+  
+  isOpen = signal<boolean>(false);
 
-    selectOption(option: string): void {
-      if (this.viewing()) return;
+  constructor() {
+    effect(() => {
+      const isOpen = this.modalOpen();
+    });
+  }
 
-      this.control().setValue(option);
-      this.control().markAsDirty();
-      this.control().markAsTouched();
+  toggleDropdown(): void {
+    if (this.viewing()) return;
+    this.isOpen.update(value => !value);
+  }
+
+  get selectedValue(): any {
+    return this.control() !== undefined
+      ? this.control()?.value
+      : this.value() ?? null;
+  }
+
+  selectOption(option: DropdownSelectOption): void {
+    if (this.viewing()) return;
+
+    if (this.control()) {
+      this.control()?.setValue(option.value);
+      this.control()?.markAsDirty();
+      this.control()?.markAsTouched();
+    } 
+    else {
+      this.valueChange.emit(option.value);
     }
 
-    getOptionLabel(option: string): string {
-      return this.options().find(op => op.startsWith(option)) ?? '';
+    this.isOpen.set(false);
+  }
+  
+  @HostListener('document:click', ['$event'])
+  clickout(event: Event) {
+    if (!this.eRef.nativeElement.contains(event.target)) {
+      this.isOpen.set(false);
     }
+  }
+
+  getOptionLabel(): string {
+    return this.options().find(
+      option => option.value === this.selectedValue
+    )?.label ?? '';
+  }
+
+  markAsTouched(): void {
+    if (this.requiredValidation()) {
+      this.control()?.markAsTouched();
+    }
+  }
+
+  checkValid(): boolean {
+    return this.requiredValidation() && this.control()
+      ? this.requiredValidation()! && this.control()?.valid! && this.control()?.touched!
+      : false;
+  }
+
+  checkInvalid(): boolean {
+    return this.requiredValidation() && this.control()
+      ? this.requiredValidation() && this.control()?.invalid! && this.control()?.touched!
+      : false;
+  }
+
+  applyTransparency(): string {
+    return this.requiredValidation() && this.control()?.touched
+      ? 'transparent'
+      : ''
+  }
 }

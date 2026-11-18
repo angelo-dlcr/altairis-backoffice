@@ -30,7 +30,14 @@ export class ModalComponent {
   close(): void {
     this.modalInstance?.hide();
   }
+  
+  onHide(): void {
+    const activeElement = document.activeElement;
 
+    if (activeElement instanceof HTMLElement) {
+      activeElement.blur();
+    }
+  }
   onHidden(): void {
     this.closed.emit();
   }

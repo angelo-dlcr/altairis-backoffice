@@ -16,124 +16,123 @@
         </a>
     </div>
 }
-<div class="container mt-5 mb-3 h-100">
-    @if(isLoading()) {
-        <div class="d-flex justify-content-center">
-            <div class="spinner-border text-secondary" role="status">
-                <span class="visually-hidden">Cargando registros...</span>
-            </div>
+    
+@if(isLoading()) {
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-secondary" role="status">
+            <span class="visually-hidden">Cargando registros...</span>
         </div>
+    </div>
+}
+@else {
+    @if(error()){
+        <p class="text-danger"><i class="bi bi-exclamation-circle"></i> Fallo al conectar con el servidor..</p>
+    }
+    @else if(data()?.totalCount! <= 0){
+        <p class="text-secondary-emphasis">No hay registos que coincidan con la búsqueda.</p>
     }
     @else {
-        @if(error()){
-            <p class="text-danger"><i class="bi bi-exclamation-circle"></i> Fallo al conectar con el servidor..</p>
-        }
-        @else if(data()?.totalCount! <= 0){
-            <p class="text-secondary-emphasis">No hay registos que coincidan con la búsqueda.</p>
-        }
-        @else {
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="text-center">
+                        <th scope="col">Referencia</th>
+                        <th scope="col">Código de Hotel</th>
+                        <th scope="col">Huésped</th>
+                        <th scope="col">Check-In</th>
+                        <th scope="col">Check-Out</th>
+                        <th scope="col">Habitaciones</th>
+                        <th scope="col">Tipo de habitación</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (reservation of data()?.items; track reservation.id) {
                         <tr class="text-center">
-                            <th scope="col">Referencia</th>
-                            <th scope="col">Código de Hotel</th>
-                            <th scope="col">Huésped</th>
-                            <th scope="col">Check-In</th>
-                            <th scope="col">Check-Out</th>
-                            <th scope="col">Habitaciones</th>
-                            <th scope="col">Tipo de habitación</th>
-                            <th scope="col">Estado</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (reservation of data()?.items; track reservation.id) {
-                            <tr class="text-center">
-                                <td scope="row">{{reservation.reference}}</td>
-                                <td scope="row">{{reservation.hotel?.code}}</td>
-                                <td scope="row">{{reservation.guestName}}</td>
-                                <td scope="row">{{reservation.checkInDate | date:'dd/MM/yyyy'}}</td>
-                                <td scope="row">{{reservation.checkOutDate | date:'dd/MM/yyyy'}}</td>
-                                <td scope="row">{{reservation.roomsCount}}</td>
-                                <td scope="row">{{reservation.roomType?.code}}</td>
-                                <td scope="row">
-                                    <span 
-                                        class="badge rounded-pill badge"
-                                        [class]="{
-                                            'text-secondary': reservation.status == 'Pending', 
-                                            'bg-secondary-subtle': reservation.status == 'Pending',
+                            <td scope="row">{{reservation.reference}}</td>
+                            <td scope="row">{{reservation.hotel?.code}}</td>
+                            <td scope="row">{{reservation.guestName}}</td>
+                            <td scope="row">{{reservation.checkInDate | date:'dd/MM/yyyy'}}</td>
+                            <td scope="row">{{reservation.checkOutDate | date:'dd/MM/yyyy'}}</td>
+                            <td scope="row">{{reservation.roomsCount}}</td>
+                            <td scope="row">{{reservation.roomType?.code}}</td>
+                            <td scope="row">
+                                <span 
+                                    class="badge rounded-pill badge"
+                                    [class]="{
+                                        'text-secondary': reservation.status == 'Pending', 
+                                        'bg-secondary-subtle': reservation.status == 'Pending',
 
-                                            'text-success': reservation.status == 'Confirmed', 
-                                            'bg-success-subtle': reservation.status == 'Confirmed',
+                                        'text-success': reservation.status == 'Confirmed', 
+                                        'bg-success-subtle': reservation.status == 'Confirmed',
 
-                                            'text-danger': reservation.status == 'Cancelled', 
-                                            'bg-danger-subtle': reservation.status == 'Cancelled',
-                                        }"
-                                    >
-                                        {{statusLabels[reservation.status]}}
-                                    </span>
-                                </td>
-                                <td scope="row">
-                                    <div class="dropdown">
-                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-gear me-2"></i>
-                                        </a>
+                                        'text-danger': reservation.status == 'Cancelled', 
+                                        'bg-danger-subtle': reservation.status == 'Cancelled',
+                                    }"
+                                >
+                                    {{statusLabels[reservation.status]}}
+                                </span>
+                            </td>
+                            <td scope="row">
+                                <div class="dropdown">
+                                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-gear me-2"></i>
+                                    </a>
 
-                                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="cursor: pointer;">
+                                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" style="cursor: pointer;">
+                                        <li>
+                                            <a class="dropdown-item">
+                                                <i class="bi bi-eye me-2"></i>
+                                                Ver
+                                            </a>
+                                        </li>
+
+                                        @if (['Pending', 'Confirmed'].includes(reservation.status)) 
+                                        {
                                             <li>
                                                 <a class="dropdown-item">
-                                                    <i class="bi bi-eye me-2"></i>
-                                                    Ver
+                                                    <i class="bi bi-pencil me-2"></i>
+                                                    Editar
                                                 </a>
                                             </li>
+                                        }
+                                        
+                                        @if (['Pending'].includes(reservation.status)) 
+                                        {
+                                            <li>
+                                                <a class="dropdown-item">
+                                                    <i class="bi bi-check2 me-2"></i>
+                                                    Confirmar
+                                                </a>
+                                            </li> 
+                                        }
 
-                                            @if (['Pending', 'Confirmed'].includes(reservation.status)) 
-                                            {
+                                        @if (['Pending', 'Confirmed'].includes(reservation.status)) 
+                                        {
                                                 <li>
-                                                    <a class="dropdown-item">
-                                                        <i class="bi bi-pencil me-2"></i>
-                                                        Editar
-                                                    </a>
-                                                </li>
-                                            }
-                                            
-                                            @if (['Pending'].includes(reservation.status)) 
-                                            {
-                                                <li>
-                                                    <a class="dropdown-item">
-                                                        <i class="bi bi-check2 me-2"></i>
-                                                        Confirmar
-                                                    </a>
-                                                </li> 
-                                            }
-
-                                            @if (['Pending', 'Confirmed'].includes(reservation.status)) 
-                                            {
-                                                 <li>
-                                                    <a class="dropdown-item">
-                                                        <i class="bi bi-x-lg me-2"></i>
-                                                        Cancelar
-                                                    </a>
-                                                </li> 
-                                            }
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            
-            <app-pagination-component
-                [totalCount]="data()?.totalCount ?? 0"
-                [pageNumber]="data()?.pageNumber ?? 1"
-                [pageSize]="data()?.pageSize ?? pagination()?.pageSize ?? 10"
-                [totalPages]="data()?.totalPages ?? 0"
-                (pageChange)="onPageChange($event)"
-            >
-            </app-pagination-component>
-        }
+                                                <a class="dropdown-item">
+                                                    <i class="bi bi-x-lg me-2"></i>
+                                                    Cancelar
+                                                </a>
+                                            </li> 
+                                        }
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        <app-pagination-component
+            [totalCount]="data()?.totalCount ?? 0"
+            [pageNumber]="data()?.pageNumber ?? 1"
+            [pageSize]="data()?.pageSize ?? pagination()?.pageSize ?? 10"
+            [totalPages]="data()?.totalPages ?? 0"
+            (pageChange)="onPageChange($event)"
+        >
+        </app-pagination-component>
     }
-</div>
+}

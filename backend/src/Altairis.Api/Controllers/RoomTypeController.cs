@@ -2,6 +2,7 @@
 using Altairis.Application.DTOs.Filters;
 using Altairis.Application.Helpers;
 using Altairis.Application.Interfaces.Services;
+using Azure;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -31,8 +32,28 @@ namespace Altairis.Api.Controllers
                 : BadRequest(response);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
+
+
+        [HttpGet(nameof(GetAllByHotelId))]
+        public async Task<IActionResult> GetAllByHotelId([FromQuery] int hotelId)
+        {
+            var result = await _service.GetAllByHotelIdAsync(hotelId);
+
+            switch (result.StatusCode)
+            {
+                case (HttpStatusCode.NotFound):
+                        return NotFound(result);
+
+                case (HttpStatusCode.InternalServerError):
+                        return BadRequest(result);
+
+                default: return Ok(result);
+            }
+        }
+
 
         [HttpGet(nameof(GetAllPaged))]
         public async Task<IActionResult> GetAllPaged([FromQuery] PaginationFilters pagination, [FromQuery] RoomTypeFiltersDTO? filter = null) 
@@ -49,6 +70,7 @@ namespace Altairis.Api.Controllers
                 : BadRequest(response);
         }
 
+
         [HttpPut("ChangeStatus/{id:int}")]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] bool activate)
         {
@@ -57,21 +79,15 @@ namespace Altairis.Api.Controllers
             switch (response.StatusCode)
             {
                 case (HttpStatusCode.NotFound):
-                    {
                         return NotFound(response);
-                    }
+
                 case (HttpStatusCode.BadRequest):
-                    {
                         return BadRequest(response);
-                    }
+
                 case (HttpStatusCode.InternalServerError):
-                    {
                         return Conflict(response);
-                    }
-                default:
-                    {
-                        return Ok(response);
-                    }
+
+                default: return Ok(response);
             }
         }
 

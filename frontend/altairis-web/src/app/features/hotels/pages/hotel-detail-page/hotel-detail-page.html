@@ -1,1 +1,38 @@
-<p>hotel-detail-page works!</p>
+
+<p class="text-secondary fs-6">Total: {{ roomTypes()?.length }}</p>
+
+<div class="border rounded-3 overflow-auto">
+    <table class="table table-striped table-hover mb-0 text-center">
+        <thead>
+            <tr>
+                <th scope="col">Código</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Capacidad máxima</th>
+                <th scope="col">Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (roomType of roomTypes(); track roomType.code)
+            {
+                <tr>
+                    <td scope="row">{{ roomType.code }}</td>
+                    <td>{{ roomType.name }}</td>
+                    <td>{{ roomType.description }}</td>
+                    <td>{{ roomType.maxOccupancy }}</td>
+                    <td scope="row">
+                        <span 
+                            class="badge rounded-pill badge"
+                            [class]="{
+                                'text-success': roomType.isActive, 'bg-success-subtle': roomType.isActive,
+                                'text-danger': !roomType.isActive, 'bg-danger-subtle': !roomType.isActive
+                            }"
+                        >
+                            {{roomType.isActive ? 'Activo' : 'Inactivo'}}
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

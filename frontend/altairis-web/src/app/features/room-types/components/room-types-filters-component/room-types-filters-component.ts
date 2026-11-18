@@ -1,9 +1,10 @@
 import { Component, output, signal } from '@angular/core';
 import { RoomTypeFilters } from '../../models/room-type.model';
 import { FormsModule } from '@angular/forms';
+import { DropdownSelectComponent, DropdownSelectOption } from '../../../../shared/components/dropdown-select-component/dropdown-select-component';
 
 @Component({
-  imports: [FormsModule],
+  imports: [FormsModule, DropdownSelectComponent],
   selector: 'app-room-types-filters-component',
   styleUrl: './room-types-filters-component.scss',
   templateUrl: './room-types-filters-component.html',
@@ -19,11 +20,20 @@ export class RoomTypesFiltersComponent {
     startDate: null,
     endDate: null,
   });
+  
+  statusOptions: DropdownSelectOption<boolean | null>[] = [
+    { value: null, label: 'Todos' },
+    { value: true, label: 'Activo' },
+    { value: false, label: 'Inactivo' },
+  ];
 
-  updateFilterField(field: keyof RoomTypeFilters, value: any) {
+  updateFilterField<K extends keyof RoomTypeFilters>(
+    field: K, 
+    value: RoomTypeFilters[K]
+  ) {
     this.filters.update(currentFilters => ({
       ...currentFilters,
-      [field]: value === '' ? null : value
+      [field]: value === '' ? null as RoomTypeFilters[K] : value
     }));
   }
 

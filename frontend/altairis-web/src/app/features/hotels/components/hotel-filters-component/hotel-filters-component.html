@@ -38,39 +38,12 @@
     
     <div class="row mb-2">
         <div class="col-md-4">
-            <label for="" class="form-label">Estado</label>
-            <select
-                class="form-select"
+            <label for="" class="form-label fw-semibold">Estado</label>
+            <app-dropdown-select-component
                 id="isActive"
-                [(ngModel)]="filters().isActive"
-                (ngModelChange)="updateFilterField('isActive', $event)"
-            >
-                <option value=null>Todos</option>
-                <option value=true>Activos</option>
-                <option value=false>Inactivos</option>
-            </select>
-        </div>
-        
-        <div class="col-md-4">
-            <label for="" class="form-label fw-semibold">Fecha desde:</label>
-            <input
-                type="date"
-                class="form-control"
-                id="startDate"
-                [(ngModel)]="filters().startDate"
-                (ngModelChange)="updateFilterField('startDate', $event)"
-                placeholder=""
-            />
-        </div>
-        <div class="col-md-4">
-            <label for="" class="form-label fw-semibold">Fecha hasta:</label>
-            <input
-                type="date"
-                class="form-control"
-                id="endDate"
-                [(ngModel)]="filters().endDate"
-                (ngModelChange)="updateFilterField('endDate', $event)"
-                placeholder=""
+                [options]="statusOptions"
+                [value]="filters().isActive"
+                (valueChange)="updateFilterField('isActive', $event)"
             />
         </div>
     </div>
