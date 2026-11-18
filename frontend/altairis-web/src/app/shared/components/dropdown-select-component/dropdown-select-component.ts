@@ -1,4 +1,4 @@
-import { Component, effect, input, output } from '@angular/core';
+import { Component, effect, ElementRef, HostListener, inject, input, output, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 export interface DropdownSelectOption<T = any> {
@@ -13,6 +13,8 @@ export interface DropdownSelectOption<T = any> {
   templateUrl: './dropdown-select-component.html',
 })
 export class DropdownSelectComponent {
+  private eRef = inject(ElementRef);
+
   control = input<FormControl | undefined>(undefined);
   
   value = input<any>(null);
@@ -25,11 +27,18 @@ export class DropdownSelectComponent {
   placeholder = input<string>('Seleccione una opción');
   
   modalOpen = input<boolean>(false);
+  
+  isOpen = signal<boolean>(false);
 
   constructor() {
     effect(() => {
       const isOpen = this.modalOpen();
     });
+  }
+
+  toggleDropdown(): void {
+    if (this.viewing()) return;
+    this.isOpen.update(value => !value);
   }
 
   get selectedValue(): any {
@@ -39,16 +48,25 @@ export class DropdownSelectComponent {
   }
 
   selectOption(option: DropdownSelectOption): void {
-      if (this.viewing()) return;
+    if (this.viewing()) return;
 
-      if (this.control()) {
-        this.control()?.setValue(option.value);
-        this.control()?.markAsDirty();
-        this.control()?.markAsTouched();
-      } 
-      else {
-        this.valueChange.emit(option.value);
-      }
+    if (this.control()) {
+      this.control()?.setValue(option.value);
+      this.control()?.markAsDirty();
+      this.control()?.markAsTouched();
+    } 
+    else {
+      this.valueChange.emit(option.value);
+    }
+
+    this.isOpen.set(false);
+  }
+  
+  @HostListener('document:click', ['$event'])
+  clickout(event: Event) {
+    if (!this.eRef.nativeElement.contains(event.target)) {
+      this.isOpen.set(false);
+    }
   }
 
   getOptionLabel(): string {

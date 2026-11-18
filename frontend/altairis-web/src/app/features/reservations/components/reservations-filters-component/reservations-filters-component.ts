@@ -1,9 +1,10 @@
 import { Component, output, signal } from '@angular/core';
-import { RESERVATION_STATUSES, ReservationFilters, ReservationStatusLabel } from '../../models/reservation.model';
+import { RESERVATION_STATUSES, ReservationFilters, ReservationStatus, ReservationStatusLabel } from '../../models/reservation.model';
 import { FormsModule } from '@angular/forms';
+import { DropdownSelectComponent, DropdownSelectOption } from '../../../../shared/components/dropdown-select-component/dropdown-select-component';
 
 @Component({
-  imports: [FormsModule],
+  imports: [FormsModule, DropdownSelectComponent],
   selector: 'app-reservations-filters-component',
   styleUrl: './reservations-filters-component.scss',
   templateUrl: './reservations-filters-component.html',
@@ -24,6 +25,13 @@ export class ReservationsFiltersComponent {
     checkOutDate: null,
   });
 
+  statusOptions: DropdownSelectOption<ReservationStatus | null>[] = [
+    { value: null, label: 'Todos' },
+    { value: 'Pending', label: this.statusLabels['Pending']},
+    { value: 'Confirmed', label: this.statusLabels['Confirmed'] },
+    { value: 'Cancelled', label: this.statusLabels['Cancelled'] },
+  ];
+  
   updateFilterField(field: keyof ReservationFilters, value: any) {
     this.filters.update(currentFilters => ({
       ...currentFilters,

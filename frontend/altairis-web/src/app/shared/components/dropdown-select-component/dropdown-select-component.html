@@ -19,9 +19,9 @@
     <button
         class="btn form-control border-0 w-100 position-relative dropdown-toggle text-end"
         type="button"
-        data-bs-toggle="dropdown"
         aria-expanded="false"
 
+        (click)="toggleDropdown()"
         (blur)="markAsTouched()"
         [disabled]="viewing()"
         [style.color]="applyTransparency()"
@@ -37,12 +37,13 @@
 
     <ul
         class="dropdown-menu w-100"
+        [class.show]="isOpen()"
         style="max-height: 150px; overflow-y: auto;"
     >
         @for (option of options(); track option.value) {
             <li>
                 <button
-                    class="dropdown-item"
+                    class="dropdown-item table-hover"
                     type="button"
                     [class.active]="selectedValue === option.value"
                     [attr.aria-label]="option.label"
@@ -52,6 +53,8 @@
                     {{ option.label }}
                 </button>
             </li>
+        } @empty {
+            <li><span class="dropdown-item-text text-muted">No hay opciones</span></li>
         }
     </ul>
 </div>

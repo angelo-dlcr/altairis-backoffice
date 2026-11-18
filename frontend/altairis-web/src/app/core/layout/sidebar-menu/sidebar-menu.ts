@@ -50,7 +50,7 @@ export class SidebarMenuComponent {
     },
 
     {
-      label: 'Reservas',
+      label: 'Reservaciones',
       path: '/reservations',
       icon: 'bi bi-calendar-check'
     },

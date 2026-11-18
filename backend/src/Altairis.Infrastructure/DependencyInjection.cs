@@ -44,6 +44,7 @@ namespace Altairis.Infrastructure
             services.AddScoped<IReservationService, ReservationService>();
             services.AddScoped<IDailyInventoryService, DailyInventoryService>();
             services.AddScoped<IRoomTypeService, RoomTypeService>();
+            services.AddScoped<IStatisticsService, StatisticsService>();
 
             return services;
         }

@@ -1,37 +1,81 @@
 <h2>Estadísticas</h2>
 
 <div class="container p-5">
-
-    <div style="min-width: 60rem;" >
-        <div class="d-flex flex-row justify-content-around">
-            <div class="card p-2" style="min-width: 18rem;">
-                <div class="card-body">
-                    <p class="card-text fw-semibold text-secondary fs-5">Hoteles registrados</p>
-                    <p class="card-title text-dark fw-normal" style="font-size: 3em;">125</p>
-                    <div class="d-flex flex-column mt-3">
-                        <div class="d-flex justify-content-between gap-3">
-                            <p class="fw-semibold fs-6 text-success bg-success-subtle badge">115 activos</p>
-                            <p class="fw-semibold fs-6 text-danger bg-danger-subtle badge">10 inactivos</p>
-                        </div>
-                    </div>
-                </div>  
-            </div>
-            <div class="card p-2" style="min-width: 18rem;">
-                <div class="card-body">
-                    <p class="card-text fw-semibold text-secondary fs-5">Reservaciones</p>
-                    <p class="card-title text-dark fw-normal" style="font-size: 3em;">125</p>
-                    <div class="d-flex flex-column mt-3">
-                        <div class="d-flex justify-content-between gap-3">
-                            <p class="fw-semibold fs-6 text-success bg-success-subtle badge">100 confirmadas</p>
-                            <p class="fw-semibold fs-6 text-danger bg-danger-subtle badge">10 canceladas</p>
-                        </div>
-                        <div class="d-flex justify-content-between gap-3">
-                            <p class="fw-semibold fs-6 text-secondary bg-secondary-subtle badge">15 pendientes</p>
-                        </div>
-                    </div>
-                </div>  
-            </div>
-        </div>
+    <div class="d-flex flex-wrap justify-content-start gap-4">
+        <app-statistic-card-component 
+            title="Reservaciones"
+            icon="bi bi-calendar-check"
+            [style]="'secondary'"
+            [value]="statistics()?.roomTypes ?? 0"
+            [statistics]="[
+                {
+                    value: statistics()?.pendingReservations ?? 0, 
+                    label: 'pendientes', 
+                    style: 'secondary'
+                },
+                {
+                    value: statistics()?.confirmedReservations ?? 0, 
+                    label: 'confirmadas', 
+                    style: 'success'
+                },
+                {
+                    value: statistics()?.cancelledReservations ?? 0, 
+                    label: 'canceladas', 
+                    style: 'danger'
+                },
+            ]"
+        />
+        
+        <app-statistic-card-component 
+            title="Hoteles"
+            icon="bi bi-building"
+            [style]="'secondary'"
+            [value]="statistics()?.hotels ?? 0"
+            [statistics]="[
+                {
+                    value: statistics()?.activeHotels ?? 0, 
+                    label: 'activos', 
+                    style: 'success'
+                },
+                {
+                    value: statistics()?.inactiveHotels ?? 0, 
+                    label: 'inactivos', 
+                    style: 'danger'
+                },
+            ]"
+        />
+        
+        <app-statistic-card-component 
+            title="Habitaciones"
+            icon="bi bi-house-gear"
+            [style]="'secondary'"
+            [value]="statistics()?.roomTypes ?? 0"
+            [statistics]="[
+                {
+                    value: statistics()?.activeRoomTypes ?? 0, 
+                    label: 'activos', 
+                    style: 'success'
+                },
+                {
+                    value: statistics()?.inactiveRoomTypes ?? 0, 
+                    label: 'inactivos', 
+                    style: 'danger'
+                },
+            ]"
+        />
+        
+        <app-statistic-card-component
+            title="Clientes registrados"
+            icon="bi bi-people"
+            [style]="'secondary'"
+            [value]="statistics()?.customers ?? 0"
+            [statistics]="[
+                {
+                    value: '', 
+                    label: 'activos', 
+                    style: 'success'
+                }
+            ]"
+        />
     </div>
-
 </div>
